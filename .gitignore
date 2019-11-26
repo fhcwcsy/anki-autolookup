@@ -1,6 +1,8 @@
 # Files listed here will be ignored by git. See https://git-scm.com/docs/gitignore 
 
 /presentation/*
-!/*.tex
+!/presentation/*.tex
 
+/presentation/*
+!/presentation/*.pdf
 
