@@ -66,8 +66,6 @@ class Word:
         return self._word
         
     def definitions(self):
-        b = {}
-        b.values
         return self._definition.keys(), self._definition.values()
 
     def pronunciation(self):
