@@ -4,7 +4,9 @@ import requests
 import urllib.request 
 from bs4 import BeautifulSoup 
  
-Entry = namedtuple('Entry', ['word', 'definitions', 'examples', 'pronunciation'])
+keepExamples = 2
+Entry = namedtuple('Entry', 
+        ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
 
 """
 Entry: A named tuple representing an entry in a dictionary of a looked-up word.
@@ -12,15 +14,17 @@ Entry: A named tuple representing an entry in a dictionary of a looked-up word.
 Attributes:
 
     word: a string saving the word.
+
+    pos: part of speech. A string.
     
+    pronounciation: A string, which is the pronunciation of that word.
+
     definitions: A list of definition of the word. Must have the same order with
         examples (see examples below).
 
     examples: A list of list of examples of the word, corresponding the
         definitions. Must have the same order with definitions (see examples
         below.)
-
-    pronounciation: A string, which is the pronunciation of that word.
 
 Example:
 
@@ -55,6 +59,9 @@ Example:
 class LookupRequest:
     def __init__(self, word):
         self._word = word
+        self._entries = None
+
+
 
     def onlineLookup(self):
         """
@@ -73,12 +80,28 @@ class LookupRequest:
             response = requests.get(url)
             print(response.status_code)
             soup = BeautifulSoup(response.text, "html.parser") 
-            self._pronunciation = '/{}/'.format(soup.find('span', 'ipa dipa lpr-2 lpl-1').text)
-            # self._pronunciation = soup.findAll('span', 'ipa dipa lpr-2 lpl-1')
-            self._definition = soup.findAll('span', 'trans dtrans dtrans-se')
-            self._examples = soup.find('span', 'eg deg').text
-            # print(self._pronunciation)
-            print(self._examples)
+            webEntries = soup.findAll('div', 'pr entry-body__el')
+            self._entries = []
+            for entry in webEntries:
+                pronunciation = entry.find('span', 'us dpron-i').find('span', 'lpl-1').text
+                pos = entry.find('span', 'pos dpos').text
+                pronunciation = '/{}/'.format(
+                        entry.find('span', 'ipa dipa lpr-2 lpl-1').text)
+                definition_tags = entry.findAll('div', 'def-block ddef_block')
+                definition_list = []
+                example_list = []
+                for dt in definition_tags:
+                    if ((dt.parent.attrs['class'])[0] == 'phrase-body'):
+                        continue
+                    definition_list.append(
+                            dt.find('span', 'trans dtrans dtrans-se').text)
+                    example_list.append([t.text for t in dt.findAll(
+                        'span', 'eg deg')][:keepExamples])
+                self._entries.append(Entry(self._word, pos, pronunciation,
+                    definition_list, example_list))
+                    # print(t.parent.attrs)
+                # print(len(definition_tags))
+            print(self._entries)
 
         except Exception as e:
             raise e
