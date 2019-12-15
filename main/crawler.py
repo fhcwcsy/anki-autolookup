@@ -78,7 +78,7 @@ class LookupRequest:
             prefix = 'https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/' 
             url = prefix + self._word 
             response = requests.get(url)
-            print(response.status_code)
+            # print(response.status_code)
             soup = BeautifulSoup(response.text, "html.parser") 
             webEntries = soup.findAll('div', 'pr entry-body__el')
             self._entries = []
@@ -101,12 +101,15 @@ class LookupRequest:
                     definition_list, example_list))
                     # print(t.parent.attrs)
                 # print(len(definition_tags))
-            print(self._entries)
+            # print(self._entries)
 
         except Exception as e:
             raise e
      
+    def export(self):
+        return self._entries
 
 if __name__ == "__main__":
-    l = LookupRequest('record')
+    l = LookupRequest('curse')
     l.onlineLookup()
+    print(l.export())
