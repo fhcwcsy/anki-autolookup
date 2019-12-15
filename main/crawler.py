@@ -1,9 +1,13 @@
 from collections import namedtuple
-
-Word = namedtuple('Word', ['word', 'definitions', 'examples', 'pronunciation'])
+import re
+import requests
+import urllib.request 
+from bs4 import BeautifulSoup 
+ 
+Entry = namedtuple('Entry', ['word', 'definitions', 'examples', 'pronunciation'])
 
 """
-Word: A named tuple representing a looked-up word.
+Entry: A named tuple representing an entry in a dictionary of a looked-up word.
 
 Attributes:
 
@@ -48,3 +52,38 @@ Example:
 
 """
 
+class LookupRequest:
+    def __init__(self, word):
+        self._word = word
+
+    def onlineLookup(self):
+        """
+        Look up a word in the specified dictionary source. The word provided 
+        must be found in the local wordlist. If the lookup fails, then return 
+        a tuple of (word, None).
+        
+        Arguments: 
+            word: the word to look up
+            return: A tuple containing the word and its definition found
+        """
+            
+        try:
+            prefix = 'https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/' 
+            url = prefix + self._word 
+            response = requests.get(url)
+            print(response.status_code)
+            soup = BeautifulSoup(response.text, "html.parser") 
+            self._pronunciation = '/{}/'.format(soup.find('span', 'ipa dipa lpr-2 lpl-1').text)
+            # self._pronunciation = soup.findAll('span', 'ipa dipa lpr-2 lpl-1')
+            self._definition = soup.findAll('span', 'trans dtrans dtrans-se')
+            self._examples = soup.find('span', 'eg deg').text
+            # print(self._pronunciation)
+            print(self._examples)
+
+        except Exception as e:
+            raise e
+     
+
+if __name__ == "__main__":
+    l = LookupRequest('record')
+    l.onlineLookup()
