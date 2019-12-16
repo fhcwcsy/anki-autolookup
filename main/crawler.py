@@ -62,27 +62,41 @@ class LookupRequest:
         self._entries = None
 
 
-
     def onlineLookup(self):
         """
-        Look up a word in the specified dictionary source. The word provided 
-        must be found in the local wordlist. If the lookup fails, then return 
-        a tuple of (word, None).
+        Packed lookup method. Deals with special cases.
+        """
+
+        self._directOnlineLookup()
+
+        # American English spelling
+        if self._entries[0].definitions[0][-6:] == '的美式拼寫）':
+
+            self._directOnlineLookup(self._entries[0].definitions[0][1:-6], self._entries[0].word)
+
+    def _directOnlineLookup(self, target=None, replace=None):
+        """
+        Look up the word in Cambridge online dictionary and return a list of
+            Entry objects. If the word is found to be spelled in American
+            English, the function rerun to get the correct meaning.
         
         Arguments: 
             word: the word to look up
-            return: A tuple containing the word and its definition found
+
+        return: A list of Entry objects
         """
+        if target == None:
+            target = self._word
             
         try:
             prefix = 'https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/' 
-            url = prefix + self._word 
+            url = prefix + target 
             response = requests.get(url)
-            # print(response.status_code)
             soup = BeautifulSoup(response.text, "html.parser") 
             webEntries = soup.findAll('div', 'pr entry-body__el')
             self._entries = []
             for entry in webEntries:
+                word = entry.find('span', 'hw dhw').text
                 pronunciation = entry.find('span', 'us dpron-i').find('span', 'lpl-1').text
                 pos = entry.find('span', 'pos dpos').text
                 pronunciation = '/{}/'.format(
@@ -93,15 +107,16 @@ class LookupRequest:
                 for dt in definition_tags:
                     if ((dt.parent.attrs['class'])[0] == 'phrase-body'):
                         continue
-                    definition_list.append(
-                            dt.find('span', 'trans dtrans dtrans-se').text)
-                    example_list.append([t.text for t in dt.findAll(
-                        'span', 'eg deg')][:keepExamples])
-                self._entries.append(Entry(self._word, pos, pronunciation,
+                    def_text = dt.find('span', 'trans dtrans dtrans-se').text
+                    definition_list.append(def_text)
+                    example_single = [t.text for t in dt.findAll(
+                        'span', 'eg deg')][:keepExamples]
+                    if replace:
+                        for i in range(len(example_single)):
+                            example_single[i] = example_single[i].replace(word, replace)
+                    example_list.append(example_single)
+                self._entries.append(Entry(word, pos, pronunciation,
                     definition_list, example_list))
-                    # print(t.parent.attrs)
-                # print(len(definition_tags))
-            # print(self._entries)
 
         except Exception as e:
             raise e
@@ -110,6 +125,6 @@ class LookupRequest:
         return self._entries
 
 if __name__ == "__main__":
-    l = LookupRequest('curse')
+    l = LookupRequest('color')
     l.onlineLookup()
     print(l.export())
