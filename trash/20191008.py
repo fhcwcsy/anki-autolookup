@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # Create deck
     # Request("createDeck", deck="test")
-    # print( Request("deckNames").result )
+    print( Request("deckNames").result )
 
     # sync
     # Request("sync")
