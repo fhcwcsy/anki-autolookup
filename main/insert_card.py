@@ -1,6 +1,7 @@
 # Copied from https://foosoft.net/projects/anki-connect/ 
 import json
 import urllib.request
+from collections import namedtuple
 
 class Request:
 
@@ -27,24 +28,45 @@ class Request:
         if self.response['error'] is not None:
             raise Exception(self.response['error'])
 
-        self.result = self.response["result"]
+        s
+
+
+    # sync
+    # Request("sync")
+
+
+
+    # sync
+    # Request("sync")
+elf.result = self.response["result"]
         # TODO: return value undefined!!
+
+def add_note(wordinfo):
+    front = ''
+    for entry in wordinfo:
+        word = entry.word
+        front += entry.pos + '\n'
+        front += entry.pronunciation + '\n'
+        for defi in entry.definitions:
+            front += defi + '\n'
+        for ex in entry.examples:
+            try:
+                front += ex[0] + '\n'
+            except:
+                pass 
+
 
 if __name__ == "__main__":
 
     # check API version
     if Request("version").result != 6 :
         raise Exception("API version is not 6")
-
-    # Create deck
-    # Request("createDeck", deck="test")
-    # print( Request("deckNames").result )
-
-    # sync
-    # Request("sync")
-
-    # stupid error
-    # print( Request("stupidError").result )
-
+    
+    #entries is a list of nametuples, which is stored in the attribute "_entries" of the class "LookupRequest"
+    add_note(entries)
     print("done")
+
+
+#entries格式：
+#entry(word='', pos='', pronunciation='', definitions=['', '', ''], examples=[[], [], []])
 
