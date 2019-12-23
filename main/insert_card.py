@@ -28,18 +28,8 @@ class Request:
         if self.response['error'] is not None:
             raise Exception(self.response['error'])
 
-        s
+        elif.result = self.response["result"]
 
-
-    # sync
-    # Request("sync")
-
-
-
-    # sync
-    # Request("sync")
-elf.result = self.response["result"]
-        # TODO: return value undefined!!
 
 def add_note(wordinfo):
     front = ''
@@ -68,5 +58,5 @@ if __name__ == "__main__":
 
 
 #entries格式：
-#entry(word='', pos='', pronunciation='', definitions=['', '', ''], examples=[[], [], []])
+#[entry(word='', pos='', pronunciation='', definitions=['', '', ''], examples=[[], [], []]), entry(...)]
 
