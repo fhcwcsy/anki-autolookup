@@ -2,9 +2,7 @@ from collections import namedtuple
 import re
 import requests
 import urllib.request 
-from bs4 import BeautifulSoup
-import json
-import urllib.request
+from bs4 import BeautifulSoup 
  
 keepExamples = 2
 Entry = namedtuple('Entry', 
@@ -12,29 +10,42 @@ Entry = namedtuple('Entry',
 
 """
 Entry: A named tuple representing an entry in a dictionary of a looked-up word.
+
 Attributes:
+
     word: a string saving the word.
+
     pos: part of speech. A string.
     
     pronounciation: A string, which is the pronunciation of that word.
+
     definitions: A list of definition of the word. Must have the same order with
         examples (see examples below).
+
     examples: A list of list of examples of the word, corresponding the
         definitions. Must have the same order with definitions (see examples
         below.)
+
 Example:
+
     w = Word('dynamic',
+
         ['adjective. 思維活躍的；活潑的，充滿活力的，精力充沛的',
         'adjective. 不斷變化的；不斷發展的'], 
+
         [['She's young and dynamic and will be a great addition to the team.',
         'We need a dynamic expansion of trade with other countries.'], 
         ['Business innovation is a dynamic process.', 
         'The situation is dynamic and may change at any time.']],
+
         '/daɪˈnæm.ɪk/')
+
     w.word = 'dynamic'
+
     w.definitions = 
         ['adjective. 思維活躍的；活潑的，充滿活力的，精力充沛的', 
         'adjective. 不斷變化的；不斷發展的']
+
     w.examples = 
         [['She's young and dynamic and will be a great addition to the team.',
         'We need a dynamic expansion of trade with other countries.'], 
@@ -42,6 +53,7 @@ Example:
         dynamic and may change at any time.']]
     
     w.pronunciation() = '/daɪˈnæm.ɪk/'
+
 """
 
 class LookupRequest:
@@ -70,6 +82,7 @@ class LookupRequest:
         
         Arguments: 
             word: the word to look up
+
         return: A list of Entry objects
         """
         if target == None:
@@ -111,58 +124,7 @@ class LookupRequest:
     def export(self):
         return self._entries
 
-
-
-class Request:
-
-    def __init__( self, action, **params):
-        self.action = action
-        self.request = {"action": action, "params": params, "version": 6} 
-        self.response = None
-        self.result = None
-        self.invoke()
-
-    def invoke(self):
-        requestJson = json.dumps(self.request).encode('utf-8')
-        self.response = json.load(urllib.request.urlopen(urllib.request.Request("http://localhost:8765", requestJson)))
-
-        if len(self.response) != 2:
-            raise Exception("response has an unexpected number of fields")
-        
-        if "error" not in self.response:
-            raise Exception("response is missing required error field")
-
-        if "result" not in self.response:
-            raise Exception("response is missing required result field")
-
-        if self.response['error'] is not None:
-            raise Exception(self.response['error'])
-
-        self.result = self.response["result"]
-        # TODO: return value undefined!!
-
-def add_note(wordinfo):
-    front = ''
-    for entry in wordinfo:
-        word = entry.word
-        front += entry.pos + '\n'
-        front += entry.pronunciation + '\n'
-        for defi in entry.definitions:
-            front += defi + '\n'
-        for ex in entry.examples:
-            try:
-                front += ex[0] + '\n'
-            except:
-                pass
-        
-    new_request = Request("addNote", note = {"deckName":"test", "modelName":"Basic", "fields":{"Front":word, "Back":front}, "options":{"allowDuplicate":False}, "tags":["yomichan"]})
- 
-
-
 if __name__ == "__main__":
     l = LookupRequest('color')
     l.onlineLookup()
-    
-
-    add_note(l._entries)
-    
+    print(l.export()) 
