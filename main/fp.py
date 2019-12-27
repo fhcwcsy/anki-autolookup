@@ -1,4 +1,4 @@
-from PIL import Image
+from PIL import Image, ImageTk
 import numpy as np
 import pytesseract
 import re
@@ -6,9 +6,10 @@ import matplotlib.pyplot as plt
 import time
 import math
 from scipy.fftpack import fft,ifft
+import tkinter as tk
+import os
 # convert the picture to gray picture first, and then convert it into array.
-def img_to_array(filename):
-    image = Image.open(filename)
+def img_to_array(image):
     image = image.convert('L') # convert it to gray
     array = np.array(image)
     # make darker color to black and lighter color to white
@@ -27,34 +28,36 @@ def array_to_img(array):
        return Image.fromarray((array))
 # This function would detect the words in one line and return a list of word index.
 def word_analysis(array,raw_up,raw_down):
-    result = ['0' for i in range(len(array[0]))]
-    # set the white column(straight) to be '1', and black column to be '0'
-    for j in range(len(array[0])):
-        n = 0
-        for k in range(raw_up,raw_down):
-            if array[k][j]==0:
-                n=1
-                break
-        if n==0:
-            result[j]='1'
-    list_target = []
-    list_distance = []
-    s = ''.join(result)
-    target = re.finditer('01+0',s) # detect the white line.
-    start = list(re.finditer('10+1',s))
-    # create lists stored the information of the span and width of white columns.
-    for each in target:
-        list_target.append((each.start(),each.end()))
-        list_distance.append(each.end()-each.start())
-    maxn= max(list_distance)
-    minn= min(list_distance)
-    list_slice = [start[0].start()]
-    # if the width of the white column is more closer to its maximum, regard it as word slice
-    for i in range(len(list_distance)):
-        if (maxn-list_distance[i])<=(list_distance[i]-minn):
-            list_slice.append(int((list_target[i][1]+list_target[i][0])/2))
-    list_slice.append(start[-1].end())
-    return list_slice
+    try:
+        result = ['0' for i in range(len(array[0]))]
+        # set the white column(straight) to be '1', and black column to be '0'
+        for j in range(len(array[0])):
+            n = 0
+            for k in range(raw_up,raw_down):
+                if array[k][j]==0:
+                    n+=1
+            if n<=1:
+                result[j]='1'
+        list_target = []
+        list_distance = []
+        s = ''.join(result)
+        target = re.finditer('01+0',s) # detect the white line.
+        start = list(re.finditer('10+1',s))
+        # create lists stored the information of the span and width of white columns.
+        for each in target:
+            list_target.append((each.start(),each.end()))
+            list_distance.append(each.end()-each.start())
+        maxn= max(list_distance)
+        minn= min(list_distance)
+        list_slice = [start[0].start()]
+        # if the width of the white column is more closer to its maximum, regard it as word slice
+        for i in range(len(list_distance)):
+            if (maxn-list_distance[i])<=(list_distance[i]-minn):
+                list_slice.append(int((list_target[i][1]+list_target[i][0])/2))
+        list_slice.append(start[-1].end())
+        return list_slice
+    except:
+        return []
 # only for debug. It would draw the line we detect.
 def check(filename):
     imarray = img_to_array(filename)
@@ -131,9 +134,32 @@ def raw_analysis(array):
             list_line.append(list_chapter)
             list_line_index.append(list_ch_index[i])
     return list_line_index
+# use for debug only, it will draw the column we detect
+def check_column(array,raw_up,raw_down,l):
+    for i in range(len(array[0])):
+        array[raw_up][i]=170
+        array[raw_down][i] = 170
+    for i in range(raw_up,raw_down):
+        for each in l:
+            array[i][each]=170
+    im = array_to_img(array)
+    im.show()
+# to verify if the two words are similar
+def is_similar(s1,s2):
+    if abs(len(s1)-len(s2))>2:
+        return False
+    n = 0
+    for each in s1:
+        if each in s2:
+            pass
+        else:
+            n+=1
+    if n>=int(len(s1)/3)+1:
+        return False
+    else:
+        return True
 # put the file and position into it, and it would return the translation of the word which you click.
-def pointing_word(filename,*args):
-    imarray = img_to_array(filename)
+def pointing_word(img1,imarray,*args):
     raw = args[0]
     column = args[1]
     raw_up = raw
@@ -157,40 +183,54 @@ def pointing_word(filename,*args):
         else:
             raw_down+=1
     list_ref = word_analysis(imarray,raw_up,raw_down)
-    order = 0
-    for i in range(len(list_ref)-1):
-        if list_ref[i]<=args[1]<=list_ref[i+1]:
-            order = i
-            break
-    img2 = array_to_img(imarray)
-    img3 = img2.crop((0,raw_up,len(imarray[0])-1,raw_down))
-    text = pytesseract.image_to_string(img3, lang = 'eng')
-    list_text = re.findall('\w+',text)
-    return list_text[order]
-class onclick:
-    def __init__(self,fig,filename):
-        self.x = 0
-        self.y = 0
-        self.cid = fig.canvas.mpl_connect('button_press_event',self)
-        self.filename = filename
-    def __call__(self,event):
-        self.x = event.x
-        self.y = event.y
-        im = pointing_word(self.filename,event.y,event.x)
-        print(self.y,self.x,event.y,event.x)
-        text = pytesseract.image_to_string(im, lang='eng')
-        print(text)
-def search_word(filename):
-    img = Image.open(filename)
-    fig = plt.figure('Image')
-    plt.imshow(img)
-    plt.title(filename)
-    click = onclick(fig,filename)
-    plt.show()
-    
-#search_word('img1.jpg')
-print(pointing_word('img3.jpg',400,361))
-"""
+    #check_column(imarray,raw_up,raw_down,list_ref)
+    try:
+        order = 0
+        column_right = 1
+        column_left = 0
+        for i in range(len(list_ref)-1):
+            if list_ref[i]<=args[1]<=list_ref[i+1]:
+                column_left = list_ref[i]
+                column_right = list_ref[i+1]
+                order = i
+                break
+        img2 = img1.crop((0,raw_up,len(imarray[0])-1,raw_down))
+        text = pytesseract.image_to_string(img2, lang = 'eng')
+        list_text = re.findall('\w+',text)
+        w1 = list_text[order]
+        img3 = img1.crop((column_left,raw_up,column_right,raw_down))
+        w2 = pytesseract.image_to_string(img3, lang = 'eng')
+        if is_similar(w1,w2):
+            return w1
+        elif len(w2)==0:
+            return w1
+        else:
+            return w2
+    except:
+        try:
+            img4 = img1.crop((column_left,raw_up,column_right,raw_down))
+            w2 =  pytesseract.image_to_string(img4, lang = 'eng')
+            return w2
+        except:
+            return 'choose again'
+def motion(event):
+    t1 = time.perf_counter()
+    print(pointing_word(img,imarray,event.y,event.x))
+    t2 = time.perf_counter()
+    print('cost : ',t2-t1)
+    return
+master = tk.Tk()
+master.title('This is a freaking test')
+img = Image.open('img3.jpg')
+imarray = img_to_array(img)
+tkimg = ImageTk.PhotoImage(img) 
+master.geometry('{}x{}'.format(*img.size))
+pic = tk.Label(master, image = tkimg)
+pic.pack(side = "bottom", fill = "both", expand = "yes") 
+pic.bind('<Button>',motion)
+# master.pack()
+tk.mainloop()
+"""print(pointing_word('img3.jpg',400,361))
 raw_analysis(img_to_array('img1.jpg'))
 t1 = time.perf_counter()
 im = pointing_word('img1.jpg',500,361)
