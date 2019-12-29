@@ -20,7 +20,7 @@ from PIL import Image, ImageTk
 import numpy as np
 import pytesseract
 import re
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import time
 # import math
 # from scipy.fftpack import fft,ifft
