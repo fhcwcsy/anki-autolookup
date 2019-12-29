@@ -8,6 +8,7 @@ import math
 from scipy.fftpack import fft,ifft
 import tkinter as tk
 import os
+
 # convert the picture to gray picture first, and then convert it into array.
 def img_to_array(image):
     image = image.convert('L') # convert it to gray
@@ -23,10 +24,12 @@ def img_to_array(image):
                 array[i][j] = 255
     im = array_to_img(array)
     return array
+
 # convert the array to image
 def array_to_img(array):
        return Image.fromarray((array))
 # This function would detect the words in one line and return a list of word index.
+
 def word_analysis(array,raw_up,raw_down):
     try:
         result = ['0' for i in range(len(array[0]))]
@@ -59,6 +62,7 @@ def word_analysis(array,raw_up,raw_down):
     except:
         return []
 # only for debug. It would draw the line we detect.
+
 def check(filename):
     imarray = img_to_array(filename)
     line = raw_analysis(imarray)
@@ -67,6 +71,7 @@ def check(filename):
             imarray[a][i] = 170
             imarray[b-1][i] = 170
     return array_to_img(imarray)
+
 # use Fourirer transform to detect the line. It isn't completed yet.
 def raw_analysis(array):
     l = [0 for i in range(len(array))]
@@ -134,6 +139,7 @@ def raw_analysis(array):
             list_line.append(list_chapter)
             list_line_index.append(list_ch_index[i])
     return list_line_index
+
 # use for debug only, it will draw the column we detect
 def check_column(array,raw_up,raw_down,l):
     for i in range(len(array[0])):
@@ -144,6 +150,7 @@ def check_column(array,raw_up,raw_down,l):
             array[i][each]=170
     im = array_to_img(array)
     im.show()
+
 # to verify if the two words are similar
 def is_similar(s1,s2):
     if abs(len(s1)-len(s2))>2:
@@ -158,6 +165,7 @@ def is_similar(s1,s2):
         return False
     else:
         return True
+
 # put the file and position into it, and it would return the translation of the word which you click.
 def pointing_word(img1,imarray,*args):
     raw = args[0]
@@ -213,12 +221,14 @@ def pointing_word(img1,imarray,*args):
             return w2
         except:
             return 'choose again'
+
 def motion(event):
     t1 = time.perf_counter()
     print(pointing_word(img,imarray,event.y,event.x))
     t2 = time.perf_counter()
     print('cost : ',t2-t1)
     return
+
 master = tk.Tk()
 master.title('This is a freaking test')
 img = Image.open('img3.jpg')

@@ -8,8 +8,9 @@ def motion(event):
 
 master = tk.Tk()
 master.title('This is a freaking test')
-img = Image.open('test.png')
+img = Image.open('img3.jpg')
 tkimg = ImageTk.PhotoImage(img) 
+print(img.size)
 master.geometry('{}x{}'.format(*img.size))
 pic = tk.Label(master, image = tkimg)
 pic.pack(side = "bottom", fill = "both", expand = "yes") 
