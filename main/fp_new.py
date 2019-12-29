@@ -15,6 +15,7 @@ Example:
 IMAGE_PATH = './img3.jpg'
 LINE_THRESHOLD = 3
 BNW_THRESHOLD = 140
+SPACE_THRESHOLD = 2
 
 from PIL import Image, ImageTk
 import numpy as np
@@ -121,8 +122,9 @@ class TextPicture():
         try:
             # sum vertically, convert to bool then back to int so the columns 
             # with no black pixels will be 0 and 1 otherwise
-            verticalSum = np.sum(self.imgArray[lineUpperBound:lineLowerBound][:],
-                    axis=0).astype(bool).astype(int).astype(str)
+            verticalSum = np.floor_divide(
+                    np.sum(self.imgArray[lineUpperBound:lineLowerBound][:],
+                    axis=0), SPACE_THRESHOLD).astype(bool).astype(int).astype(str)
             
             # plt.plot(verticalSum)
             # plt.show() 
@@ -170,7 +172,7 @@ if __name__ == "__main__":
 
     master = tk.Tk()
     master.title('This is a freaking test')
-    tkimg = ImageTk.PhotoImage(tp.processedImg) 
+    tkimg = ImageTk.PhotoImage(tp.originalImg) 
     master.geometry('{}x{}'.format(*tp.processedImg.size))
     pic = tk.Label(master, image = tkimg)
     pic.pack(side = "bottom", fill = "both", expand = "yes") 
