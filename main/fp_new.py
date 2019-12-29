@@ -171,10 +171,11 @@ if __name__ == "__main__":
     tp = TextPicture(IMAGE_PATH)
 
     master = tk.Tk()
-    master.title('This is a freaking test')
+    master.title('Text Recognition')
     tkimg = ImageTk.PhotoImage(tp.originalImg) 
     master.geometry('{}x{}'.format(*tp.processedImg.size))
+    master.resizable(width=False, height=False)
     pic = tk.Label(master, image = tkimg)
     pic.pack(side = "bottom", fill = "both", expand = "yes") 
-    pic.bind('<Button>', tp.bindEvent)
+    pic.bind('<Button-1>', tp.bindEvent)
     tk.mainloop()
