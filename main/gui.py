@@ -1,6 +1,7 @@
 import tkinter as tk
-import crawler
-import add_card
+import imgrecog
+import tkinter.filedialog
+import WordLookup
 
 class lookupGUI:
     def __init__(self):
@@ -18,56 +19,20 @@ class lookupGUI:
         article_lookup_button = tk.Button(window, text='Article Lookup', fg='white', bg='red', command=article_lookup, font=('Arial', 20), width=20)
         article_lookup_button.pack()
 
-        image_lookup_button = tk.Button(window, text='Image Lookup', fg='white', bg='green', command=image_lookup, font=('Arial', 20), width=20)
+        image_lookup_button = tk.Button(window, text='Image Lookup', fg='white', bg='green', command=self.image_lookup, font=('Arial', 20), width=20)
         image_lookup_button.pack()
+
+
 
         window.mainloop() 
  
 
+    def image_lookup(self):
+        imgrecog.ImgRecognitionWindow() 
+
 
     def word_lookup(self):
-        def search(self):
-            self.word = word_lookup_entry.get()
-            word = self.word
-            print(word)
-            l = crawler.LookupRequest(word)
-            l.onlineLookup()
-            #add_card.create_model()
-            entries = l.export()
-            #add_card.add_note(entries)
-        
-            definitions = ''
-            for entry in entries:
-                for defi in entry.definitions:
-                    definitions += defi + ', '
-                try:
-                    if definitions[-2:] == ', ':
-                        definitions = definitions[:-2]
-                except:
-                    pass
-                definitions += '\n'
-            self.definitions = definitions
-            print(definitions)
-            result.insert('insert', definitions)
-        word_lookup = tk.Tk()
-        word_lookup.title('Word Lookup!')
-        word_lookup.geometry('800x600')
-        word_lookup.configure(background='blue')
-
-        word_lookup_frame = tk.Frame(word_lookup)
-        word_lookup_frame.pack(side=tk.TOP)
-        word_lookup_label = tk.Label(word_lookup_frame, text='Word to lookup: ', bg='white', font=('Arial', 12))
-        word_lookup_label.pack(side=tk.LEFT)
-        word_lookup_entry = tk.Entry(word_lookup_frame, font=('Arial', 12), bg='White')
-        word_lookup_entry.pack(side=tk.LEFT)
-        
-        result = tk.Text(word_lookup, bg='white',fg='blue', font=('Arial', 12), height=3)
-        result.pack() 
-
-        search_button = tk.Button(word_lookup, text='Lookup!', fg='blue', bg='white', command=search(self), font=('Arial', 20), width=20)
-        search_button.pack()
-        
-
+        WordLookup.WordLookupWindow()
  
 
 
