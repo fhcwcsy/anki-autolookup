@@ -70,9 +70,12 @@ class LookupRequest:
         self._directOnlineLookup()
 
         # American English spelling
-        if self._entries[0].definitions[0][-6:] == '的美式拼寫）':
+        try:
+            if self._entries[0].definitions[0][-6:] == '的美式拼寫）':
 
-            self._directOnlineLookup(self._entries[0].definitions[0][1:-6], self._entries[0].word)
+                self._directOnlineLookup(self._entries[0].definitions[0][1:-6], self._entries[0].word)
+        except:
+            pass
 
     def _directOnlineLookup(self, target=None, replace=None):
         """

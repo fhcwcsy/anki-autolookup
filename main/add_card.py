@@ -7,7 +7,7 @@ from collections import namedtuple
 Entry = namedtuple('Entry', 
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
  
-my_model = "new_model"
+my_model = "model_11"
 
 class Request:
 
@@ -53,6 +53,11 @@ def add_note(wordinfo):
         pronunciation[i] = entry.pronunciation
         for defi in entry.definitions:
             definitions[i] += defi + ', '
+        try:
+            if definitions[i][-2:] == ', ':
+                definitions[i] = definitions[i][:-2]
+        except:
+            pass
         for ex in entry.examples:
             for exs in ex:
                 examples[i].append(exs)    
@@ -80,9 +85,7 @@ def add_note(wordinfo):
             except:
                 fields[field] = ' '
                 
-    print(fields)
     add_card = Request("addNote", note={"deckName": "test", "modelName": my_model, "fields":fields, "tags":""}) 
-    print(add_card.response)
 
 
 def create_model():
@@ -103,8 +106,6 @@ def create_model():
                 inOrderFields=inorderfields, 
                 css=".card{font-family:Arial; background-color:white;}", 
                 cardTemplates=[{"Front": "<font size='6'><b><center>{{word}}</center></b></font>", "Back":back}])
-        print(inorderfields)
-        print(create_model.response)
         
 
 
@@ -127,4 +128,4 @@ if __name__ == "__main__":
 
 #entries格式：
 #[entry(word='', pos='', pronunciation='', definitions=['', '', ''], examples=[[], [], []]), entry(...)]
- 
+
