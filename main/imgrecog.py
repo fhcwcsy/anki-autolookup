@@ -23,6 +23,7 @@ import time
 # import math
 # from scipy.fftpack import fft,ifft
 import tkinter as tk
+import winword
 # import os
 
 def timer(func):
@@ -63,7 +64,7 @@ class TextPicture():
 
     def bindEvent(self, event):
         # print(f'mouse location: ({event.x}, {event.y})')
-        self.recognizeWord(event.x, event.y)
+        return self.recognizeWord(event.x, event.y)
 
     def _is_similar(self, s1,s2):
         if abs(len(s1)-len(s2))>2:
@@ -109,7 +110,7 @@ class TextPicture():
                 leftBound, lineUpperBound, rightBound, lineLowerBound))
         targetWordFromWord = pytesseract.image_to_string(wordCrop, lang = 'eng')
         # print(targetWordFromLine, targetWordFromWord)
-        print(targetWordFromLine)
+        # print(targetWordFromLine)
         if self._is_similar(targetWordFromLine, targetWordFromWord):
             return targetWordFromLine
         elif len(targetWordFromWord)==0:
@@ -138,9 +139,6 @@ class TextPicture():
             blackColumns = list(re.finditer('01+0', lineStr))
             whiteSpaceIndices = [(ws.start(), ws.end()) for ws in whiteSpacesIter]
             whiteSpaceSize = [ws[1]-ws[0] for ws in whiteSpaceIndices]
-            # print(whiteSpaceSize)
-            # print(whiteSpaceIndices)
-            # print(whiteSpaceSize)
             maxWhiteSpaceSize = max(whiteSpaceSize)
             minWhiteSpaceSize = min(whiteSpaceSize)
 
@@ -168,42 +166,33 @@ class ImgRecognitionWindow(TextPicture):
         # return cls._instance
 
     def __init__(self):
+        self.wordWindow = tk.Tk()
+        picWindow = tk.Tk()
         self._img_path = tk.filedialog.askopenfilename(title=
                 'Choose your image.')
-
         TextPicture.__init__(self, self._img_path)
-        master = tk.Tk()
-        # master.withdraw()
-        master.title('Text Recognition')
-        tkimg = ImageTk.PhotoImage(self.originalImg, master=master) 
-        master.geometry('{}x{}'.format(*self.processedImg.size))
-        master.resizable(width=False, height=False)
-        pic = tk.Label(master, image = tkimg)
+
+        # picture window settings
+        picWindow.title('Text Recognition')
+        tkimg = ImageTk.PhotoImage(self.originalImg, master=picWindow) 
+        picWindow.geometry('{}x{}+0+0'.format(*self.processedImg.size))
+        picWindow.resizable(width=False, height=False)
+        pic = tk.Label(picWindow, image = tkimg)
         pic.pack(side = "bottom", fill = "both", expand = "yes") 
         pic.bind('<Button-1>', self.bindEvent)
+
+        # word window settings
+        self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()-self.processedImg.size[0]}x{self.wordWindow.winfo_screenheight()}+{self.processedImg.size[0]}+0')
+        self.wordWindow.title('Words to be added')
+        self.wlist = winword.WordlistWindow(self.wordWindow, bg='#444444')
+        self.wlist.pack(expand="true", fill="both")
+
         tk.mainloop()
+
+    def bindEvent(self, event):
+        word = super().bindEvent(event)
+        self.wlist.newWord(word)
  
 
 if __name__ == "__main__":
-    # operator: (333, 524)
-    # arr = np.array(
-            # [[ 1,  2,  3],
-             # [ 4,  5,  6],
-             # [ 7,  8,  9],
-             # [10, 11, 12]])
-    # arr = np.subtract(1, arr)
-    # print(arr)
-    
     i = ImgRecognitionWindow()
-    
-    # tp = TextPicture(IMAGE_PATH)
-
-    # master = tk.Tk()
-    # master.title('Text Recognition')
-    # tkimg = ImageTk.PhotoImage(tp.originalImg) 
-    # master.geometry('{}x{}'.format(*tp.processedImg.size))
-    # master.resizable(width=False, height=False)
-    # pic = tk.Label(master, image = tkimg)
-    # pic.pack(side = "bottom", fill = "both", expand = "yes") 
-    # pic.bind('<Button-1>', tp.bindEvent)
-    # tk.mainloop()
