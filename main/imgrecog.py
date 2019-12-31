@@ -23,7 +23,7 @@ import time
 # import math
 # from scipy.fftpack import fft,ifft
 import tkinter as tk
-import winword
+import wordlist_cls
 # import os
 
 def timer(func):
@@ -158,12 +158,17 @@ class TextPicture():
             raise e
 
 class ImgRecognitionWindow(TextPicture):
-    # _instance = None
+    """
+    A singleton class. Defines the window showing the image. The user clicks
+    on words they want to look up and it will be shown in the wordlist on the
+    right.
+    """
+    _instance = None
     
-    # def __new__(cls, *args, **kwargs):
-        # if cls._instance is None:
-            # cls._instance = object.__new__(cls)
-        # return cls._instance
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = object.__new__(cls)
+        return cls._instance
 
     def __init__(self):
         self.wordWindow = tk.Tk()
@@ -184,7 +189,7 @@ class ImgRecognitionWindow(TextPicture):
         # word window settings
         self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()-self.processedImg.size[0]}x{self.wordWindow.winfo_screenheight()}+{self.processedImg.size[0]}+0')
         self.wordWindow.title('Words to be added')
-        self.wlist = winword.WordlistWindow(self.wordWindow, bg='#444444')
+        self.wlist = wordlist_cls.WordlistWindow(self.wordWindow, bg='#444444')
         self.wlist.pack(expand="true", fill="both")
 
         tk.mainloop()
