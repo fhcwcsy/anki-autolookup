@@ -2,6 +2,7 @@ import tkinter as tk
 import imgrecog
 import tkinter.filedialog
 import WordLookup
+import ArticleLookup
 
 class lookupGUI:
     def __init__(self):
@@ -16,7 +17,7 @@ class lookupGUI:
         word_lookup_button = tk.Button(window, text='Word Lookup', fg='white', bg='blue', command=self.word_lookup, font=('Arial', 20), width=20)
         word_lookup_button.pack()
 
-        article_lookup_button = tk.Button(window, text='Article Lookup', fg='white', bg='red', command=article_lookup, font=('Arial', 20), width=20)
+        article_lookup_button = tk.Button(window, text='Article Lookup', fg='white', bg='red', command=self.article_lookup, font=('Arial', 20), width=20)
         article_lookup_button.pack()
 
         image_lookup_button = tk.Button(window, text='Image Lookup', fg='white', bg='green', command=self.image_lookup, font=('Arial', 20), width=20)
@@ -33,6 +34,8 @@ class lookupGUI:
 
     def word_lookup(self):
         WordLookup.WordLookupWindow()
+    def article_lookup(self):
+        ArticleLookup.ArticleRecognitionWindow()
  
 
 
