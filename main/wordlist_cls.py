@@ -130,6 +130,23 @@ class WordlistWindow(tk.Frame):
 ..
         Args:
             None
+        # Scrollable frame setup
+        tk.Frame.__init__(self, master, **kwargs)
+
+        self.vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
+        self.vscrollbar.pack(side='right', fill="y",  expand="false")
+        self.canvas = tk.Canvas(self,
+                                bg='#444444', bd=0,
+                                height=350,
+                                highlightthickness=0,
+                                yscrollcommand=self.vscrollbar.set)
+        self.canvas.pack(side="left", fill="both", expand="true")
+        self.vscrollbar.config(command=self.canvas.yview)
+
+        self.canvas.xview_moveto(0)
+        self.canvas.yview_moveto(0)
+
+
 
         Returns:
             None
@@ -150,7 +167,8 @@ class WordlistWindow(tk.Frame):
                     print('Can not add this word:', self._finishedWord[i])
         for b, listOfEntries in zip(self._cbvar, self._finished):
             print(b.get(), listOfEntries) # If b is true, then add the corresponding entries.
-        self.winfo_toplevel().destroy() 
+        self.winfo_toplevel().quit()
+    
 
     def _set_scrollregion(self, event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))

@@ -34,6 +34,7 @@ class WordLookupWindow:
         self.outputbox = tk.Text(master)
         self.outputbox.pack()
         self.outputbox.bind('<Return>', self.FireonEnter)
+        self.outputbox.bind('<BackSpace>', self.Back)
 
         #copied from imgrecog.py
         self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()//4}x{self.wordWindow.winfo_screenheight()}+{3*self.wordWindow.winfo_screenwidth()//4}+0') 
@@ -48,6 +49,9 @@ class WordLookupWindow:
         self.count += 1
         self.word = word[:-1]
         self.wlist.newWord(self.word)
+
+    def Back(self, event):
+        self.count -= 1
 
 
 
