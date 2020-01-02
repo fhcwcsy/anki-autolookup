@@ -7,15 +7,51 @@ INTERVAL = 1
  
 
 class WordlistWindow(tk.Frame):
-    """
-    A class defining the window listing all the words to be added. If the box
-    in front of a word is checked when the user quit the window, the word will
-    be added to anki.
+    """A class defining the window listing all the words to be added.
+    
+    The design of this class is based on the answer here:
+    https://stackoverflow.com/questions/23483629/dynamically-adding-checkboxes-into-scrollable-frame
+
+    This class inherit tk.Frame. Initiate the window by  constructing an
+    instance as a normal tk.Frame:
+
+        w = WordlistWindow(master)
+
+    Then pack to show the frame. Note that if you use more than one Tk objects at
+    a time, then this master Tk object must be constructed first or there will
+    be errors, reasons unknown. Use
+    
+        w.newWord('MyWord')
+
+    to add new word. The word should pop up in the list immediately, unless it
+    is already in the list. A lookup process will be initiated in the background
+    once the object is constructed. Each word added with newWord() method will
+    be added to a queue, and will be looked up one by one in the background with
+    threading module. The words added to the list should have its checkbutton 
+    checked by default (if not, then something's wrong! Please make sure that
+    this window is the first Tk object constructed in the script.) The user can 
+    click on the "done" button to quit. The program will wait until the queue is
+    empty, then add all the checked words to anki, then quit.
+
+    Attributes:
+        vscrollbar: The vertical tk.Scrollbar object on the right.
+        canvas: The tk.Canvas in the background of the frame.
+        interior: a tk.Frame object that everything lie on.
     """
     def __init__(self, master, **kwargs):
-        """
+        """Construct a modified tk.Frame object with scrollbar and word checklist.
+
         Constructor. Inherit the Frame class from tk, while adding a scrollbar,
         and word listing feature. Takes all arguments as tk.Frame
+
+        Args:
+            same as tk.Frame.
+
+        Return:
+            None
+
+        Raises:
+            None
         """
         # Scrollable frame setup
         tk.Frame.__init__(self, master, **kwargs)
@@ -36,7 +72,7 @@ class WordlistWindow(tk.Frame):
         self.interior = tk.Frame(self.canvas, **kwargs)
         self.canvas.create_window(0, 0, window=self.interior, anchor="nw")
 
-        self.bind('<Configure>', self.set_scrollregion)
+        self.bind('<Configure>', self._set_scrollregion)
 
         # done button
         self.quitButton = tk.Button(self.interior, text='Done', command=self.quitAndAdd)
@@ -55,11 +91,20 @@ class WordlistWindow(tk.Frame):
         self._threadInstance.start()
 
     def _lookupTreading(self):
-        """
+        """Look up words in self._queue in the background.
+
         Uses threading module to implement multitasking, so it will continue to
         lookup words (the speed depends on the internet speed) while the user
-        input words (the speed depends on CPU and GPU). Takes no arguments and
-        returns nothing.
+        input words (the speed depends on CPU and GPU).
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         while self._thread:
             # print('thread running')
@@ -77,10 +122,20 @@ class WordlistWindow(tk.Frame):
             self._queue.remove(word)
 
     def quitAndAdd(self):
-        """
+        """Add the words checked and quit.
+
         Called when the user hit the "quit" button. The function wait until all
         cards have been looked up (the queue is empty), then add all cards to
         deck, and finally quit the window. 
+
+        Args:
+            None
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         while len(self._queue) != 0:
             time.sleep(INTERVAL)
@@ -92,16 +147,23 @@ class WordlistWindow(tk.Frame):
         self.winfo_toplevel().quit()
 
 
-    def set_scrollregion(self, event=None):
-        """ 
-        Set the scroll region on the canvas
-        """
+    def _set_scrollregion(self, event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
     def newWord(self, word):
-        """
+        """Add new words
+
         function to add new word. load the word in to the queue, then the method
         _lookupTreading will look them up in the background.
+
+        Args:
+            word: The word to be added.
+
+        Returns:
+            None
+
+        Raises:
+            None
         """
         if not ((word in self._finishedWord) or (word in self._queue)):
             self._cbvar.append(tk.BooleanVar())
@@ -110,10 +172,7 @@ class WordlistWindow(tk.Frame):
                 var=self._cbvar[-1]))
             self._cb[-1].grid(row=(len(self._cb) + 2), column=1, sticky='w')
             self._queue.append(word)
-            self.set_scrollregion()
-# def add_button():
-    # tk.Button(checkbox_pane.interior, text='New Button', command=add_button).pack()
-    # checkbox_pane.set_scrollregion()
+            self._set_scrollregion()
 
 if __name__ == "__main__":
     root = tk.Tk()
@@ -124,6 +183,5 @@ if __name__ == "__main__":
 
     root.mainloop() 
 
-# main_button = tk.Button(ww.interior,text='Press to add button',command=add_button).pack()
 
  
