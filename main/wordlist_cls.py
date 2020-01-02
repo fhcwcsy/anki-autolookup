@@ -2,6 +2,7 @@ import tkinter as tk
 import crawler
 import time
 import threading
+import add_card
 
 INTERVAL = 1
  
@@ -116,7 +117,6 @@ class WordlistWindow(tk.Frame):
             request = crawler.LookupRequest(word) 
             request.onlineLookup()
             entries = request.export()
-            # TODO: what if the lookup failed?
             self._finished.append(entries)
             self._finishedWord.append(word)
             self._queue.remove(word)
@@ -127,7 +127,7 @@ class WordlistWindow(tk.Frame):
         Called when the user hit the "quit" button. The function wait until all
         cards have been looked up (the queue is empty), then add all cards to
         deck, and finally quit the window. 
-
+..
         Args:
             None
 
@@ -140,12 +140,17 @@ class WordlistWindow(tk.Frame):
         while len(self._queue) != 0:
             time.sleep(INTERVAL)
 
-        # TODO: replaced with adding cards
+        for i in range(len(self._finishedWord)):
+            if self._cbvar[i].get() == True and self._finished[i] != None:
+                try:
+                    add_card.create_model()
+                    add_card.add_note(self._finished[i])
+                    print('added')
+                except:
+                    print('Can not add this word:', self._finishedWord[i])
         for b, listOfEntries in zip(self._cbvar, self._finished):
             print(b.get(), listOfEntries) # If b is true, then add the corresponding entries.
-        
-        self.winfo_toplevel().quit()
-
+        self.winfo_toplevel().destroy() 
 
     def _set_scrollregion(self, event=None):
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))

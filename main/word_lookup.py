@@ -1,7 +1,5 @@
 import tkinter as tk
-import crawler
-import add_card
-
+import wordlist_cls
 
 
 '''
@@ -21,12 +19,13 @@ class Application(tk.Frame):
 class WordLookupWindow:
     def __init__(self):
         self.count = 1.0
- 
+        
+        self.wordWindow = tk.Tk()
         master = tk.Tk()
         master.title('Word Lookup!')
-        master.geometry('800x600')
+        master.geometry(f'{3*master.winfo_screenwidth()//4}x{master.winfo_screenheight()}+0+0')
         master.configure(background='blue') 
-       # app = Application(master)
+        
         word_lookup_frame = tk.Frame(master)
         word_lookup_frame.pack(side=tk.TOP)
         word_lookup_label = tk.Label(master, text='Word to lookup: ', bg='white', font=('Arial', 12))
@@ -36,20 +35,22 @@ class WordLookupWindow:
         self.outputbox.pack()
         self.outputbox.bind('<Return>', self.FireonEnter)
 
-        master.mainloop() 
+        #copied from imgrecog.py
+        self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()//4}x{self.wordWindow.winfo_screenheight()}+{3*self.wordWindow.winfo_screenwidth()//4}+0') 
+        self.wordWindow.title('Words to be added')
+        self.wlist = wordlist_cls.WordlistWindow(self.wordWindow, bg='#444444')
+        self.wlist.pack(expand="true", fill="both")  
+
+        tk.mainloop() 
 
     def FireonEnter(self, event):
         word = self.outputbox.get(self.count, self.count+1)
         self.count += 1
         self.word = word[:-1]
-        self.search()
+        self.wlist.newWord(self.word)
 
-    def search(self):
-        l = crawler.LookupRequest(self.word)
-        l.onlineLookup()
-        entries = l.export()
-        add_card.create_model()
-        add_card.add_note(entries) 
+
+
 
 if __name__ == '__main__':
     dao = WordLookupWindow()

@@ -8,52 +8,33 @@ class lookupGUI:
     def __init__(self):
 
         self.definitions = ''
-
         window = tk.Tk()
         window.title('Anki Auto-Lookup!')
         window.geometry('400x300')
         window.configure(background='white')
         
-        word_lookup_button = tk.Button(window, text='Word Lookup', fg='white', bg='blue', command=self.word_lookup, font=('Arial', 20), width=20)
+        word_lookup_button = tk.Button(window, text='Word Lookup', fg='white', bg='blue', command=self.wordlookup, font=('Arial', 20), width=20)
         word_lookup_button.pack()
 
-        article_lookup_button = tk.Button(window, text='Article Lookup', fg='white', bg='red', command=self.article_lookup, font=('Arial', 20), width=20)
+        article_lookup_button = tk.Button(window, text='Article Lookup', fg='white', bg='red', command=self.articlelookup, font=('Arial', 20), width=20)
         article_lookup_button.pack()
 
-        image_lookup_button = tk.Button(window, text='Image Lookup', fg='white', bg='green', command=self.image_lookup, font=('Arial', 20), width=20)
+        image_lookup_button = tk.Button(window, text='Image Lookup', fg='white', bg='green', command=self.imagelookup, font=('Arial', 20), width=20)
         image_lookup_button.pack()
 
-
-
         window.mainloop() 
- 
 
-    def image_lookup(self):
+    def imagelookup(self):
         imgrecog.ImgRecognitionWindow() 
 
 
-    def word_lookup(self):
-        word_lookup.word_lookupWindow()
-    def article_lookup(self):
-        article_lookup.ArticleRecognitionWindow()
+    def wordlookup(self):
+        word_lookup.WordLookupWindow()
+
+
+    def articlelookup(self):
+        article_lookup.ArticleRecognitionWindow() 
  
-
-
-def article_lookup():
-    # TODO
-    pass
-
-def image_lookup():
-    # TODO
-    pass
-
-
-'''
-def jump():
-    jump = tk.Toplevel()
-    jump.title('hi!')
-'''
-
 
 '''
 
