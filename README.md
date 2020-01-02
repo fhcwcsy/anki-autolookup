@@ -4,7 +4,27 @@
 
 ## Installation
 
+This program is only tested on Ubuntu 19.04 and Ubuntu 19.10. To use it you need
+to clone the project first:
+```{bash}
+git clone https://github.com/fhcwcsy/anki-autolookup.git
+```
+You will also need an additional module [**Tesseract**](https://github.com/tesseract-ocr/tesseract/blob/master/README.md),
+please follow the installation there. For Ubuntu users, all you need to do is:
+```{bash}
+sudo apt install tesseract-ocr
+sudo apt install libtesseract-dev
+```
+And finally:
+```{bash}
+pip install pytesseract 
+```
+
 ## Usage
+
+```{bash}
+./start.sh
+```
 
 ## File Description
 
@@ -12,6 +32,7 @@
 
 .
 +-- README.md: This documentation.
++-- start.sh: bash script to launch the program.
 +-- main: Main scripts of the program.
 |   +-- add_card.py
 |   +-- article_lookup.py
@@ -32,9 +53,9 @@ Below we lists detailed descriptions for each script.
 
 ### `add_card.py`
 
-### `article_lookup.py
+### `article_lookup.py`
 
-### `cralwer.py
+### `cralwer.py`
 
 ### `gui.py`
 
