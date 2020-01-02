@@ -1,7 +1,6 @@
 import tkinter as tk
 import crawler
 import time
-import datetime
 import threading
 
 INTERVAL = 1
@@ -104,7 +103,7 @@ class WordlistWindow(tk.Frame):
         function to add new word. load the word in to the queue, then the method
         _lookupTreading will look them up in the background.
         """
-        if not ((word in self._finishedWord) and (word in self._queue)):
+        if not ((word in self._finishedWord) or (word in self._queue)):
             self._cbvar.append(tk.BooleanVar())
             self._cbvar[-1].set(True)
             self._cb.append(tk.Checkbutton(self.interior, text=word,

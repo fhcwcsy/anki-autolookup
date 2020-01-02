@@ -50,12 +50,6 @@ class WordLookupWindow:
         entries = l.export()
         add_card.create_model()
         add_card.add_note(entries) 
-        
-        
-
-
-
-
 
 if __name__ == '__main__':
     dao = WordLookupWindow()

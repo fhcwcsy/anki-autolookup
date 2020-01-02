@@ -1,8 +1,8 @@
 import tkinter as tk
 import imgrecog
 import tkinter.filedialog
-import WordLookup
-import ArticleLookup
+import word_lookup
+import article_lookup
 
 class lookupGUI:
     def __init__(self):
@@ -33,9 +33,9 @@ class lookupGUI:
 
 
     def word_lookup(self):
-        WordLookup.WordLookupWindow()
+        word_lookup.word_lookupWindow()
     def article_lookup(self):
-        ArticleLookup.ArticleRecognitionWindow()
+        article_lookup.ArticleRecognitionWindow()
  
 
 

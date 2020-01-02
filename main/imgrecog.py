@@ -187,7 +187,8 @@ class ImgRecognitionWindow(TextPicture):
         pic.bind('<Button-1>', self.bindEvent)
 
         # word window settings
-        self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()-self.processedImg.size[0]}x{self.wordWindow.winfo_screenheight()}+{self.processedImg.size[0]}+0')
+        wwwidth = min(self.wordWindow.winfo_screenwidth()-self.processedImg.size[0], 150)
+        self.wordWindow.geometry(f'{wwwidth}x{self.wordWindow.winfo_screenheight()}+{self.processedImg.size[0]}+0')
         self.wordWindow.title('Words to be added')
         self.wlist = wordlist_cls.WordlistWindow(self.wordWindow, bg='#444444')
         self.wlist.pack(expand="true", fill="both")
