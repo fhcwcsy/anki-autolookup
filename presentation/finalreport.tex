@@ -48,9 +48,46 @@ B07202037 徐鼎翔 \inst{2}}
 
 \frame{\titlepage} 
 
-\begin{frame}{}
-
+\begin{frame}{Adding Cards}
+	\textbf{Step1}: Connect with Anki API.\\
+	\textbf{Step2}: Create a model that contains the fields we need.
+	\begin{figure}[h]
+			\centering
+			\includegraphics[width=1.00\linewidth]{./model_example.png}
+	\end{figure}
 \end{frame}
+
+\begin{frame}{Adding Cards}
+	\textbf{Step3}: Create a new card using the information got by the crawler.
+	\begin{figure}[h]
+			\centering
+			\includegraphics[width=1.0\linewidth]{./card_sample.png}
+	\end{figure}
+\end{frame}
+
+\begin{frame}{GUI}
+		\text Module: \textbf{tkinter}\\
+		\text -Menu (select decks, select functions)\\
+		\indent -Word Lookup\\
+		\indent -Article Lookup\\
+		\indent -Image Lookup\\
+		\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.6\linewidth]{./GUI_main.png}
+		\end{figure}
+\end{frame}
+
+\begin{frame}{Word Lookup}
+	\begin{enumerate}
+		\item When you key in 'Enter', add the line into 'Words to be added' column.
+		\item When you press 'Done', add the words into Anki.
+	\end{enumerate}
+	\begin{figure}[h]
+			\centering
+			\includegraphics[width=0.6\linewidth]{./word_lookup_gui.png}
+	\end{figure}
+\end{frame}
+
 
 
 \end{document}
