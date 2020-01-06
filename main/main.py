@@ -16,10 +16,21 @@ class lookupGUI:
         self.master.geometry('800x600')
         self.master.configure(background='white')
         
-        deck_name_label = tk.Label(self.master, text='Please enter the deck name you want to add words in.', bg='white', font=('Arial', 15))
-        deck_name_label.pack()
-        self._deck_name_text = tk.Text(self.master, height=1, width=20)
-        self._deck_name_text.pack()
+        self.deck_name_prompt = tk.Label(self.master, text='Please select the deck you want to add cards to:', bg='white', font=('Arial', 15))
+        self.deck_name_prompt.pack()
+        
+        refreshButton = tk.Button(self.master, text='Refresh', command=self._refreshDecks)
+        refreshButton.pack()
+
+        self.targetDeck = tk.StringVar()
+
+        self.decknames = tuple([None])
+        self._updateDeckNames()
+        self._decksmenu = tk.OptionMenu(self.master, self.targetDeck, *self.decknames)
+        self._decksmenu.pack()
+
+        # self._deck_name_text = tk.Text(self.master, height=1, width=20)
+        # self._deck_name_text.pack()
         word_lookup_button = tk.Button(self.master, text='Word Lookup', fg='white',
                 bg='blue', command=self.wordlookup, font=('Arial', 20), width=20)
         word_lookup_button.pack()
@@ -39,8 +50,7 @@ class lookupGUI:
         self.master.mainloop() 
 
     def imagelookup(self):
-        deckname = self._deck_name_text.get(1.0, 2.0)[:-1]
-        add_card.new_deck_name(deckname)
+        add_card.new_deck_name(self.targetDeck.get())
  
         self.master.withdraw() 
         self.imageRecog = imgrecog.ImgRecognitionWindow() 
@@ -49,8 +59,7 @@ class lookupGUI:
 
 
     def wordlookup(self):
-        deckname = self._deck_name_text.get(1.0, 2.0)[:-1]
-        add_card.new_deck_name(deckname)
+        add_card.new_deck_name(self.targetDeck.get())
  
         self.master.withdraw() 
         self._wordlookup = word_lookup.WordLookupWindow()
@@ -59,14 +68,34 @@ class lookupGUI:
 
 
     def articlelookup(self):
-        deckname = self._deck_name_text.get(1.0, 2.0)[:-1]
-        add_card.new_deck_name(deckname)
+        add_card.new_deck_name(self.targetDeck.get())
  
         self.master.withdraw() 
         self._articlelookup = article_lookup.ArticleRecognitionWindow() 
         self.master.update()
         self.master.deiconify() 
+
+    def _getDecks(self):
+        r = add_card.Request('deckNames')
+        return r.response['result']
+
+    def _updateDeckNames(self):
+        try:
+            dn = self._getDecks()
+            self.decknames = tuple(dn)
+        except Exception as e:
+            self.decknames = tuple([None])
+            self.deck_name_prompt.configure(text='Failed to connect with API. Please check that you have\nall the prerequisite installed then click "refresh".')
+            # raise e
  
+    def _refreshDecks(self):
+        self.targetDeck.set('')
+        self._updateDeckNames()
+        self.deck_name_prompt.update()
+        self._decksmenu['menu'].delete(0, 'end') 
+        for option in self.decknames:
+            self._decksmenu['menu'].add_command(label=option, command=tk._setit(self.targetDeck, option)) 
+        # print(self.decknames)
 
 '''
 

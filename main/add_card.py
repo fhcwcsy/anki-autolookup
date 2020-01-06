@@ -125,9 +125,12 @@ if __name__ == "__main__":
         #print(new_request.result)
 
 
-    entries = [Entry(word='colour', pos='noun', pronunciation='/ˈkʌl.ər/', definitions=['顏色', '色彩，色調', '顏料，染料', '紅潤的面色；血色，氣色', '趣味；風格；風味；色彩', '（人種的）膚色'], examples=[["What's your favourite color?", 'She wears a lot of bright colors.'], ['I think we need a bit of color in this room.', 'Red and yellow peppers give a little color to the sauce.'], ['I put my new green shirt in a hot wash and the color ran (= the color came out of the material).'], ['That walk has put some color in your cheeks.', 'I watched the color drain from her face as she heard the news.'], ['We added your story for a bit of local color.', "Michael was there so that added a bit of color to the evening's proceedings."], ['She felt she had not been given the job because of her color.', 'There should be no discrimination on the grounds of color.']]), Entry(word='colour', pos='adjective', pronunciation='/ˈkʌl.ər/', definitions=['（電視、照片、印刷）彩色的'], examples=[[]]), Entry(word='bark', pos='verb', pronunciation='/ˈkʌl.ər/', definitions=['變色；給…著色；使成為…色', '（因為尷尬而）臉紅', '影響（觀點）；使有偏見'], examples=[['Do you think he colors his hair?', 'He drew a heart and colored it red.'], [], ["I'm sure my views on marriage are colored by my parents' divorce.", "I'm trying not to let my judgment be colored by that one incident."]])] 
-    create_model()
-    add_note(entries)
+    # entries = [Entry(word='colour', pos='noun', pronunciation='/ˈkʌl.ər/', definitions=['顏色', '色彩，色調', '顏料，染料', '紅潤的面色；血色，氣色', '趣味；風格；風味；色彩', '（人種的）膚色'], examples=[["What's your favourite color?", 'She wears a lot of bright colors.'], ['I think we need a bit of color in this room.', 'Red and yellow peppers give a little color to the sauce.'], ['I put my new green shirt in a hot wash and the color ran (= the color came out of the material).'], ['That walk has put some color in your cheeks.', 'I watched the color drain from her face as she heard the news.'], ['We added your story for a bit of local color.', "Michael was there so that added a bit of color to the evening's proceedings."], ['She felt she had not been given the job because of her color.', 'There should be no discrimination on the grounds of color.']]), Entry(word='colour', pos='adjective', pronunciation='/ˈkʌl.ər/', definitions=['（電視、照片、印刷）彩色的'], examples=[[]]), Entry(word='bark', pos='verb', pronunciation='/ˈkʌl.ər/', definitions=['變色；給…著色；使成為…色', '（因為尷尬而）臉紅', '影響（觀點）；使有偏見'], examples=[['Do you think he colors his hair?', 'He drew a heart and colored it red.'], [], ["I'm sure my views on marriage are colored by my parents' divorce.", "I'm trying not to let my judgment be colored by that one incident."]])] 
+    # create_model()
+    # add_note(entries)
+
+    r = Request('deckNames')
+    print(r.response)
     
     print("done")
     
