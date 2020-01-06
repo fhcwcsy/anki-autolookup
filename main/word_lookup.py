@@ -24,11 +24,9 @@ class WordLookupWindow(object):
         self._wordlistWindow = tk.Toplevel()
         self._inputWindow = tk.Toplevel()
         self._inputWindow.title('Word Lookup!')
-        self._inputWindow.geometry('{width}x{height}+0+0'.format(
-            width=3*self._inputWindow.winfo_screenwidth()//4,
-            height=self._inputWindow.winfo_screenheight()))
+        self._inputWindow.geometry('400x500+300+300')
 
-        self._inputWindow.configure(background='blue') 
+        # self._inputWindow.configure(background='blue') 
         
         word_lookup_frame = tk.Frame(self._inputWindow)
         word_lookup_frame.pack(side=tk.TOP)
@@ -36,12 +34,12 @@ class WordLookupWindow(object):
                 bg='white', font=('Arial', 12))
         word_lookup_label.pack(side=tk.TOP) 
 
-        self.outputbox = tk.Text(self._inputWindow)
+        self.outputbox = tk.Text(self._inputWindow, width=60, height=40)
         self.outputbox.pack()
         self.outputbox.bind('<Return>', self._fireOnEnter)
         self.outputbox.bind('<BackSpace>', self._back)
 
-        self._wordlistWindow.geometry(f'{self._wordlistWindow.winfo_screenwidth()//4}x{self._wordlistWindow.winfo_screenheight()}+{3*self._wordlistWindow.winfo_screenwidth()//4}+0') 
+        self._wordlistWindow.geometry('300x500+700+300') 
         self._wordlistWindow.title('Words to be added')
         self._wordlistInner = wordlist_cls.WordlistWindow(
                 self._wordlistWindow, self._quitWindow, bg='#444444')
