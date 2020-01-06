@@ -4,6 +4,9 @@
 \usepackage{amsmath}
 \usepackage{xeCJK} % use this package to set Chinese and English font separately
 \usepackage{fontspec} 
+\usepackage{listings}
+\usepackage{xcolor}
+ 
  
 
 %Packages END
@@ -11,6 +14,31 @@
 %Style setting BEGIN
 \usetheme{Madrid} 
 \usecolortheme{default} 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle} 
 
 % Serif font in Ubuntu. Choose the Chinese font available in your device
 \setCJKmainfont{Noto Serif CJK TC}
@@ -31,10 +59,17 @@
 
 \frame{\titlepage} 
 
+\begin{frame}[fragile]
+some text
+\begin{lstlisting}[language=python]
+print('fuck')
+\end{lstlisting}
+\end{frame} 
+
 \begin{frame}
 	\frametitle{Image Recognization}
-	\textbf{Goal}: Indentify the word in the picture and use it to generate the card.
-	\begin{figure}[h]`
+	\textbf{Goal}: Indentify words in a picture and generate flashcards.
+	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.55\linewidth]{./img1.jpg}
 		\caption{Target picture}
@@ -42,16 +77,16 @@
 \end{frame}
 
 \begin{frame}{Method}
-		\textbf{Step1}: Convert the picture to gray color. Then, set the blacker one to total black, whiter one to total white.\\
-		\textbf{Step1-1}: To realize step1, we would turn the picture into array to deal with it.
-		\begin{figure}[h]
-			\centering
-			\includegraphics[width=0.50\linewidth]{./picture_blackwhite.png}
-		\end{figure}
+		\textbf{Step 1}: Convert the picture to grayscale, then set the darker pixels to absolute black, lighter pixels to absolute white.\\
+		\textbf{Step 1-1}: To implement Step 1, we turn the picture into np.arrays.
+		%\begin{figure}[h]
+			%\centering
+			%\includegraphics[width=0.50\linewidth]{./picture_blackwhite.png}
+		%\end{figure}
 \end{frame}
 
 \begin{frame}{Task}
-		\textbf{How computer see a word?}
+		\textbf{How do computers recognize a word?}
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.55\linewidth]{./motor.jpg}
@@ -59,7 +94,7 @@
 \end{frame}
 
 \begin{frame}{Fourier Transform}
-		\textbf{It seems good but awful.}
+	\textbf{Seems good...but does it?}
 		\begin{figure}[H]
 			\includegraphics[width=0.45\linewidth]{./fourier.png}
 			\includegraphics[width=0.55\linewidth]{./imgslice.png}
@@ -75,8 +110,8 @@
 \end{frame}
 
 \begin{frame}{Method}
-		\textbf{Step2-1}: When the black pixels number is below the threshold number, recognize it as a white raw. This can help us detect the line.\\
-		\textbf{Step2-2}: Analyze the line, detect the wider white column to recognize the word.\\
+	\textbf{Step 2-1}: When the number of black pixels on a row (of pixels) is below a threshold, the row is recognized as the boundary of the line.\\
+		\textbf{Step 2-2}: Detect the wider white columns to identify words.\\
 		\begin{figure}[h]
 			\centering
 			\includegraphics[width=0.50\linewidth]{./raw_done.png}
@@ -84,9 +119,9 @@
 \end{frame}
 
 \begin{frame}{Method}
-		\textbf{Step3-1}: Detect the words in the line, use the order to determine which word I selected. We get WordFromLine.\\
-		\textbf{Step3-2}: Detect the word in the region I selected. We get WordFromWord.\\
-		\textbf{Step3-3}: If the WordFromLine is similar to WordFromWord or len(WordFromWord)=0, return WordFromLine. Else, return WordFromWord.\\
+		\textbf{Step 3-1}: Detect the words in the line, use the order to determine which word I selected. We get WordFromLine.\\
+		\textbf{Step 3-2}: Detect the word in the region I selected. We get WordFromWord.\\
+		\textbf{Step 3-3}: If the WordFromLine is similar to WordFromWord or len(WordFromWord)=0, return WordFromLine. Else, return WordFromWord.\\
 		\begin{figure}[h]
 			\centering
 			\includegraphics[height=0.4\linewidth]{./img1.jpg}

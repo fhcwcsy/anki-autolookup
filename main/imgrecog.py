@@ -179,15 +179,19 @@ class ImgRecognitionWindow(TextPicture):
         self._picWindow = tk.Toplevel()
         self._wordWindow = tk.Toplevel()
 
-        resizeRatio = max(img.size[0]/self._wordWindow.winfo_screenwidth(), 
+        resizeRatio = max(img.size[0]/self._wordWindow.winfo_screenwidth()/0.8, 
                 img.size[1]/self._wordWindow.winfo_screenheight(), 1)
+
+        # print(resizeRatio)
 
         if resizeRatio > 1:
             img = img.resize(
                     (int(img.size[0]/resizeRatio),
                     int(img.size[1]/resizeRatio)))
         
+        print(img.size)
         TextPicture.__init__(self, img)
+        # exit()
 
         # picture window settings
         self._picWindow.title('Text Recognition')

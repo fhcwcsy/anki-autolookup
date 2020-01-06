@@ -1,0 +1,7 @@
+\frametitle{Image Recognization}
+^^I\textbf{Goal}: Indentify words in a picture and generate flashcards.
+^^I\begin{figure}[h]
+^^I^^I\centering
+^^I^^I\includegraphics[width=0.55\linewidth]{./img1.jpg}
+^^I^^I\caption{Target picture}
+^^I\end{figure}
