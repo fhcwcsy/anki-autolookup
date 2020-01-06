@@ -62,7 +62,6 @@ class lookupGUI:
         deckname = self._deck_name_text.get(1.0, 2.0)[:-1]
         add_card.new_deck_name(deckname)
  
-        print(deckname)
         self.master.withdraw() 
         self._articlelookup = article_lookup.ArticleRecognitionWindow() 
         self.master.update()
