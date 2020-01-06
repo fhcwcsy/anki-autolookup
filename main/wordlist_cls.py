@@ -39,7 +39,7 @@ class WordlistWindow(tk.Frame):
         canvas: The tk.Canvas in the background of the frame.
         interior: a tk.Frame object that everything lie on.
     """
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, quitFunc, **kwargs):
         """Construct a modified tk.Frame object with scrollbar and word checklist.
 
         Constructor. Inherit the Frame class from tk, while adding a scrollbar,
@@ -75,6 +75,10 @@ class WordlistWindow(tk.Frame):
 
         self.bind('<Configure>', self._set_scrollregion)
 
+        # status text
+        self._status = tk.Label(self.interior, text='Status: idle')
+        self._status.grid(row=2, column=1)
+
         # done button
         self.quitButton = tk.Button(self.interior, text='Done', command=self.quitAndAdd)
         self.quitButton.grid(row=1, column=1)
@@ -90,6 +94,10 @@ class WordlistWindow(tk.Frame):
         self._threadInstance = threading.Thread(target=self._lookupTreading, args=())
         self._threadInstance.daemon = True
         self._threadInstance.start()
+
+        self._quitFunction = quitFunc
+
+        self.updateTimer()
 
     def _lookupTreading(self):
         """Look up words in self._queue in the background.
@@ -109,8 +117,10 @@ class WordlistWindow(tk.Frame):
         """
         while self._thread:
             # print('thread running')
+            # self._status.config(text=f'Status: progress {len(self._queue)}/{len(self._queue) + len(self._finishedWord)}')
             while len(self._queue) == 0:
                 # print('current list', len(self._finishedWord))
+                # print('im keep running...')
                 time.sleep(self._interval)
             # print('unfinished:', len(self._queue))
             word = self._queue[0]
@@ -120,6 +130,13 @@ class WordlistWindow(tk.Frame):
             self._finished.append(entries)
             self._finishedWord.append(word)
             self._queue.remove(word)
+
+
+
+    def updateTimer(self):
+        self._status.config(text=f'Status: queue {len(self._queue)}/{len(self._queue)+len(self._finishedWord)}')
+        self._status.after(500, self.updateTimer)
+
 
     def quitAndAdd(self):
         """Add the words checked and quit.
@@ -154,6 +171,8 @@ class WordlistWindow(tk.Frame):
         Raises:
             None
         """
+        self._quitFunction()
+
         while len(self._queue) != 0:
             time.sleep(INTERVAL)
 
@@ -162,12 +181,12 @@ class WordlistWindow(tk.Frame):
                 try:
                     add_card.create_model()
                     add_card.add_note(self._finished[i])
-                    print('added')
-                except:
+                    print('added:', self._finishedWord[i])
+                except Exception as e:
                     print('Can not add this word:', self._finishedWord[i])
-        for b, listOfEntries in zip(self._cbvar, self._finished):
-            print(b.get(), listOfEntries) # If b is true, then add the corresponding entries.
-        self.winfo_toplevel().quit()
+                    print(str(e))
+        # for b, listOfEntries in zip(self._cbvar, self._finished):
+            # print(b.get(), listOfEntries) # If b is true, then add the corresponding entries.
     
 
     def _set_scrollregion(self, event=None):
@@ -193,7 +212,7 @@ class WordlistWindow(tk.Frame):
             self._cbvar[-1].set(True)
             self._cb.append(tk.Checkbutton(self.interior, text=word,
                 var=self._cbvar[-1]))
-            self._cb[-1].grid(row=(len(self._cb) + 2), column=1, sticky='w')
+            self._cb[-1].grid(row=(len(self._cb) + 3), column=1, sticky='w')
             self._queue.append(word)
             self._set_scrollregion()
 

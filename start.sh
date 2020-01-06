@@ -1,1 +1,1 @@
-echo $USER sucks
+python3 ./main/gui.py

@@ -2,29 +2,41 @@ import tkinter as tk
 from openpyxl import load_workbook
 import re
 import wordlist_cls
-import argparse
-from argparse import RawTextHelpFormatter
+
 
 class ArticleRecognitionWindow():
     def __init__(self):
-        self.wordWindow = tk.Tk()
-        master = tk.Tk()
-        master.title('Article Lookup')
-        master.geometry(f'{3*master.winfo_screenwidth()//4}x{master.winfo_screenheight()}+0+0')
-        master.configure(background = 'black')
-        text_lookup_frame = tk.Frame(master)
+        self._threshold = 0
+        self._inputWindow = tk.Toplevel()
+        self._wordwindow = tk.Toplevel()
+        self._inputWindow.title('Article Lookup')
+        self._inputWindow.geometry('800x600+0+0')
+
+        self._inputWindow.configure(background = 'black')
+        text_lookup_frame = tk.Frame(self._inputWindow)
         text_lookup_frame.pack(side = tk.TOP)
-        text_lookup_label = tk.Label(master, text = 'Article to lookup: ', bg = 'white', font = ('Arial',12))
+        text_lookup_label = tk.Label(self._inputWindow, text = 'Article to lookup: ', 
+                bg = 'white', font = ('Arial',12))
         text_lookup_label.pack(side = tk.TOP)
-        self.outputbox = tk.Text(master)
+        self.outputbox = tk.Text(self._inputWindow)
         self.outputbox.pack()
-        self.outputbox.bind('<Return>',self.PressEnter)
-        self.wordWindow.geometry(f'{self.wordWindow.winfo_screenwidth()//4}x{self.wordWindow.winfo_screenheight()}+{3*self.wordWindow.winfo_screenwidth()//4}+0')
-        self.wordWindow.title('Words to be added')
-        self.wlist = wordlist_cls.WordlistWindow(self.wordWindow,bg = '#444444')
+        self._wordwindow.geometry('300x600+{}+0'.format(
+
+        self._wordwindow.title('Words to be added')
+        self.wlist = wordlist_cls.WordlistWindow(self._wordwindow, self._quitWindow, bg = '#444444')
         self.wlist.pack(expand = 'true', fill = 'both')
-        master.mainloop()
-    def PressEnter(self, event):
+
+        self._inputWindow.mainloop()
+
+    def _quitWindow(self):
+        self._inputWindow.destroy()
+        self._inputWindow.update()
+        self._inputWindow.quit()
+        self._wordwindow.destroy()
+        self._wordwindow.destroy()
+        self._wordwindow.quit()
+        
+    def lookup(self):
         text = self.outputbox.get('1.0','end')
         worddic = self.getWordlist()
         wordset = self.getArticle(text)
@@ -76,20 +88,13 @@ class ArticleRecognitionWindow():
             w = word
         return None
     def setLookup(self, s, dictionary):
-        """Look up each word in the set in the local wordlist. If the word is found and its frequency is below the THRESHOLD, then do online lookup. Stopwords are remov    ed.
+        """Look up each word in the set in the local wordlist. If the word is found and its frequency is below the self._threshold, then do online lookup. Stopwords are remov    ed.
     Arguments:
     s: a set containing the words to be looked up.
     dictionary: the dictionary with the key be the words and the value be its frequency.
     return: a list containing tuples of (difficult_words, definition)
     """
-        parser = argparse.ArgumentParser(prog='AutoLookup', usage='$ python main.py [optional arguments]', formatter_class=RawTextHelpFormatter ) 
-        parser.add_argument('--path', '-p', default='./text.txt', type=str, dest='path', help='Path to the text file. The default value is ./text.txt')
-        parser.add_argument('--threshold', '-t', dest='threshold', type=float, default=4e-5, help='A float between 0 and 1. Only more difficult words will be looked up if a \nlower value is specified. The default value is 4e-5.')
 
-        args = parser.parse_args()
-        THRESHOLD = args.threshold
-        if THRESHOLD > 1 or THRESHOLD < 0:
-            raise(Exception('Invalid threshold specified'))
         stopWords = ['', 'is', 'are', 'were', 'was', 'have', 'has', 's']
         vocabList = []
         for be in stopWords:
@@ -99,7 +104,7 @@ class ArticleRecognitionWindow():
             lookupResult = self.dictLookup(word, dictionary)
             if lookupResult == None:
                 continue
-            if 0 < lookupResult[1] < THRESHOLD:
+            if 0 < lookupResult[1] < self._threshold:
                 vocabList.append(word)
         return vocabList
 

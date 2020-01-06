@@ -48,9 +48,10 @@ class TextPicture():
     _BNW_THRESHOLD = 140
     SPACE_THRESHOLD = 2
 
-    def __init__(self, imgPath):
+    def __init__(self, img):
         """Constructor. Takes the path to the picture as an argument. """
-        self.originalImg = Image.open(imgPath)
+        self.originalImg = img
+
         self.imgArray = np.floor_divide(
                 np.array(self.originalImg.convert('L')), TextPicture._BNW_THRESHOLD)
         self.processedImg = Image.fromarray(np.multiply(self.imgArray, 255))
@@ -171,29 +172,50 @@ class ImgRecognitionWindow(TextPicture):
         return cls._instance
 
     def __init__(self):
-        self.wordWindow = tk.Tk()
-        picWindow = tk.Tk()
         self._img_path = tk.filedialog.askopenfilename(title=
                 'Choose your image.')
-        TextPicture.__init__(self, self._img_path)
+        img = Image.open(self._img_path)
+
+        self._picWindow = tk.Toplevel()
+        self._wordWindow = tk.Toplevel()
+
+        resizeRatio = max(img.size[0]/self._wordWindow.winfo_screenwidth(), 
+                img.size[1]/self._wordWindow.winfo_screenheight(), 1)
+
+        if resizeRatio > 1:
+            img = img.resize(
+                    (int(img.size[0]/resizeRatio),
+                    int(img.size[1]/resizeRatio)))
+        
+        TextPicture.__init__(self, img)
 
         # picture window settings
-        picWindow.title('Text Recognition')
-        tkimg = ImageTk.PhotoImage(self.originalImg, master=picWindow) 
-        picWindow.geometry('{}x{}+0+0'.format(*self.processedImg.size))
-        picWindow.resizable(width=False, height=False)
-        pic = tk.Label(picWindow, image = tkimg)
+        self._picWindow.title('Text Recognition')
+        tkimg = ImageTk.PhotoImage(self.originalImg, master=self._picWindow) 
+        self._picWindow.geometry('{}x{}+0+0'.format(*self.processedImg.size))
+        self._picWindow.resizable(width=False, height=False)
+        pic = tk.Label(self._picWindow, image = tkimg)
         pic.pack(side = "bottom", fill = "both", expand = "yes") 
         pic.bind('<Button-1>', self.bindEvent)
 
         # word window settings
-        wwwidth = min(self.wordWindow.winfo_screenwidth()-self.processedImg.size[0], 150)
-        self.wordWindow.geometry(f'{wwwidth}x{self.wordWindow.winfo_screenheight()}+{self.processedImg.size[0]}+0')
-        self.wordWindow.title('Words to be added')
-        self.wlist = wordlist_cls.WordlistWindow(self.wordWindow, bg='#444444')
+        wwwidth = min(self._wordWindow.winfo_screenwidth()-self.processedImg.size[0], 300)
+        self._wordWindow.geometry(f'{wwwidth}x{self.processedImg.size[1]}+{self.processedImg.size[0]}+0')
+        self._wordWindow.title('Words to be added')
+        self.wlist = wordlist_cls.WordlistWindow(self._wordWindow, self.quitWindow, bg='#444444')
         self.wlist.pack(expand="true", fill="both")
 
+        # self._wordWindow.lift()
+        # self._picWindow.lift()
         tk.mainloop()
+
+    def quitWindow(self):
+        self._wordWindow.destroy()
+        self._wordWindow.update()
+        self._picWindow.destroy()
+        self._picWindow.update()
+        self._wordWindow.quit()
+        self._picWindow.quit()
 
     def bindEvent(self, event):
         word = super().bindEvent(event)
