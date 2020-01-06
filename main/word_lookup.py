@@ -19,8 +19,6 @@ class Application(tk.Frame):
 class WordLookupWindow(object):
 
     def __init__(self):
-        self.count = 1.0
-        
         self._wordlistWindow = tk.Toplevel()
         self._inputWindow = tk.Toplevel()
         self._inputWindow.title('Word Lookup!')
@@ -39,7 +37,6 @@ class WordLookupWindow(object):
         self.outputbox = tk.Text(self._inputWindow)
         self.outputbox.pack()
         self.outputbox.bind('<Return>', self._fireOnEnter)
-        self.outputbox.bind('<BackSpace>', self._back)
 
         self._wordlistWindow.geometry(f'{self._wordlistWindow.winfo_screenwidth()//4}x{self._wordlistWindow.winfo_screenheight()}+{3*self._wordlistWindow.winfo_screenwidth()//4}+0') 
         self._wordlistWindow.title('Words to be added')
@@ -61,15 +58,11 @@ class WordLookupWindow(object):
 
 
     def _fireOnEnter(self, event):
-        word = self.outputbox.get(self.count, self.count+1)
-        self.count += 1
+        word = self.outputbox.get(1.0, tk.END)
         self.word = word[:-1]
-        self._wordlistInner.newWord(self.word)
-
-    def _back(self, event):
-        self.count -= 1
-
-
+        self.word = self.word.split('\n')
+        self._wordlistInner.newWord(self.word[-1])
+        
 
 
 if __name__ == '__main__':

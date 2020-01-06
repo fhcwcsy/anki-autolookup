@@ -7,7 +7,8 @@ from collections import namedtuple
 Entry = namedtuple('Entry', 
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
  
-my_model = "model_12"
+my_model = "anki_auto-lookup"
+deckName = 'test'
 
 class Request:
 
@@ -38,6 +39,7 @@ class Request:
 
 def add_note(wordinfo):
     global my_model
+    global deckName
     i = 0
     pos = [''] * 5
     pronunciation = [''] * 5
@@ -85,7 +87,7 @@ def add_note(wordinfo):
             except:
                 fields[field] = ' '
                 
-    add_card = Request("addNote", note={"deckName": "test", "modelName": my_model, "fields":fields, "tags":""}) 
+    add_card = Request("addNote", note={"deckName": deckName, "modelName": my_model, "fields":fields, "tags":""}) 
 
 
 def create_model():
@@ -107,6 +109,10 @@ def create_model():
                 css=".card{font-family:Arial; background-color:white;}", 
                 cardTemplates=[{"Front": "<font size='6'><b><center>{{word}}</center></b></font>", "Back":back}])
         
+
+def new_deck_name(name):
+    global deckName
+    deckName = name
 
 
 
