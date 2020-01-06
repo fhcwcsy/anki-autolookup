@@ -15,10 +15,15 @@ please follow the installation there. For Ubuntu users, all you need to do is:
 sudo apt install tesseract-ocr
 sudo apt install libtesseract-dev
 ```
-And finally:
+Then:
 ```{bash}
 pip install pytesseract 
 ```
+
+You will also need two Anki plugins: `Allows empty first field (during adding
+and import)` and `AnkiConnect`. Add them by clicking `Tools - Add-ons` in Anki,
+then use `46741504` and `2055492159` to add the plugins.  
+
 
 ## Usage
 
