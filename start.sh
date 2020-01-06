@@ -1,1 +1,1 @@
-python3 ./main/gui.py
+python3 ./main/main.py

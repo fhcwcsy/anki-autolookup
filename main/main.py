@@ -3,6 +3,8 @@ import imgrecog
 import tkinter.filedialog
 import word_lookup
 import article_lookup
+from os.path import abspath, dirname
+from os import chdir
 
 class lookupGUI:
     def __init__(self):
@@ -34,10 +36,8 @@ class lookupGUI:
     def imagelookup(self):
         self.master.withdraw() 
         self.imageRecog = imgrecog.ImgRecognitionWindow() 
-        print('fuck1')
         self.master.update()
         self.master.deiconify() 
-        print('fuck2')
 
 
     def wordlookup(self):
@@ -80,5 +80,6 @@ jump_button.pack()
 
 
 if __name__ == '__main__':
+    chdir(dirname(abspath(__file__)))
     dao = lookupGUI()
 
