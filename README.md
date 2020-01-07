@@ -1,7 +1,5 @@
 # Anki Autolookup
 
-**This is an unfinished project and should not be used yet.**
-
 ## Installation
 
 This program is only tested on Ubuntu 19.04 and Ubuntu 19.10. To use it you need
