@@ -9,8 +9,7 @@ KEEP_EXAMPLES = 2 # Maximum number of examples per entry
 Entry = namedtuple('Entry', 
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
 
-"""
-Entry: A named tuple representing an entry in a dictionary of a looked-up word.
+"""Entry: A named tuple representing an entry in a dictionary of a looked-up word.
 
 Attributes:
 

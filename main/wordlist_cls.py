@@ -8,7 +8,7 @@ INTERVAL = 1
  
 
 class WordlistWindow(tk.Frame):
-    """A class defining the window listing all the words to be added.
+    """A class defining the frame listing all the words to be added.
     
     The design of this class is based on the answer here:
     https://stackoverflow.com/questions/23483629/dynamically-adding-checkboxes-into-scrollable-frame
@@ -16,29 +16,26 @@ class WordlistWindow(tk.Frame):
     This class inherit tk.Frame. Initiate the window by  constructing an
     instance as a normal tk.Frame:
 
-        w = WordlistWindow(master)
+        w = WordlistWindow(master, quitFunc)
 
-    Then pack to show the frame. Note that if you use more than one Tk objects at
-    a time, then this master Tk object must be constructed first or there will
-    be errors, reasons unknown. Use
+    Then pack/grid to show the frame. Use
     
         w.newWord('MyWord')
 
-    to add new word. The word should pop up in the list immediately, unless it
+    to add a new word. The word should pop up in the list immediately, unless it
     is already in the list. A lookup process will be initiated in the background
     once the object is constructed. Each word added with newWord() method will
     be added to a queue, and will be looked up one by one in the background with
     threading module. The words added to the list should have its checkbutton 
-    checked by default (if not, then something's wrong! Please make sure that
-    this window is the first Tk object constructed in the script.) The user can 
-    click on the "done" button to quit. The program will wait until the queue is
-    empty, then add all the checked words to anki, then quit.
+    checked by default. The user can click on the "done" button to quit and 
+    quitFunc() will be called, which can be used to close the window.
 
     Attributes:
         vscrollbar: The vertical tk.Scrollbar object on the right.
         canvas: The tk.Canvas in the background of the frame.
         interior: a tk.Frame object that everything lie on.
     """
+
     def __init__(self, master, quitFunc, **kwargs):
         """Construct a modified tk.Frame object with scrollbar and word checklist.
 
@@ -80,7 +77,7 @@ class WordlistWindow(tk.Frame):
         self._status.grid(row=2, column=1)
 
         # done button
-        self.quitButton = tk.Button(self.interior, text='Done', command=self.quitAndAdd)
+        self.quitButton = tk.Button(self.interior, text='Done', command=self._quitAndAdd)
         self.quitButton.grid(row=1, column=1)
 
         # Wordlist setup
@@ -97,7 +94,7 @@ class WordlistWindow(tk.Frame):
 
         self._quitFunction = quitFunc
 
-        self.updateTimer()
+        self._updateTimer()
 
     def _lookupTreading(self):
         """Look up words in self._queue in the background.
@@ -133,12 +130,12 @@ class WordlistWindow(tk.Frame):
 
 
 
-    def updateTimer(self):
+    def _updateTimer(self):
         self._status.config(text=f'Status: queue {len(self._queue)}/{len(self._queue)+len(self._finishedWord)}')
-        self._status.after(500, self.updateTimer)
+        self._status.after(500, self._updateTimer)
 
 
-    def quitAndAdd(self):
+    def _quitAndAdd(self):
         """Add the words checked and quit.
 
         Called when the user hit the "quit" button. The function wait until all
