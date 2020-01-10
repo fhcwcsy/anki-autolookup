@@ -41,8 +41,8 @@ then use `46741504` and `2055492159` to add the plugins.
 |   +-- article_lookup.py
 |   +-- crawler.py: A cralwer to lookup words in Cambridge online dictionary.
 |   +-- dic.xlsx: A spreadsheet with data about word usage in a variety of sources.
-|   +-- gui.py
 |   +-- imgrecog.py: The script for word lookup from images.
+|   +-- main.py
 |   +-- ui.py:
 |   +-- wordlist_cls.py: The script defining the wordlist window.
 |   +-- word_lookup.py:
@@ -60,9 +60,9 @@ Below we lists detailed descriptions for each script.
 
 ### `cralwer.py`
 
-### `gui.py`
-
 ### `imgrecog.py`
+
+### `main.py`
 
 ### `ui.py`
 

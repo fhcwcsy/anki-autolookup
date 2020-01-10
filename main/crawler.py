@@ -1,3 +1,8 @@
+"""
+This file defines a namedtuple Entry to represent a dictionary entry, and a
+LookupRequest class to represent a lookup in Cambridge dictionary for each word.
+"""
+
 from collections import namedtuple
 import re
 import requests
