@@ -1,6 +1,14 @@
 """
 This file defines a namedtuple Entry to represent a dictionary entry, and a
 LookupRequest class to represent a lookup in Cambridge dictionary for each word.
+The required modules are:
+
+    - collections
+    - re (reqular expression)
+    - requests
+    - urllib
+    - bs4 (BeautifulSoup)
+
 """
 
 from collections import namedtuple
@@ -33,7 +41,7 @@ Attributes:
 
 Example:
 
-    w = Word('dynamic',
+    w = Entry('dynamic',
 
         ['adjective. 思維活躍的；活潑的，充滿活力的，精力充沛的',
         'adjective. 不斷變化的；不斷發展的'], 
