@@ -163,6 +163,8 @@ No public attributes.
 **Public methods**
 
 - `LookupRequest.__init__(word)`
+	- some nested
+	- other nested
 
 Construct a LookupRequest instance with a word. Saves the word as an attribute
 without looking it up. 
