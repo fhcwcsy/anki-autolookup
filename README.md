@@ -58,7 +58,9 @@ then use `46741504` and `2055492159` to add the plugins.
 
 ```
 
-Below we lists detailed descriptions for each script.
+Below we lists detailed descriptions for each script. **All of these are copied
+from the docstrings. You can simply skip these and read the codes if you want
+to understand the program. They are only listed because we are asked to do so.**
 
 ### `add_card.py`
 
