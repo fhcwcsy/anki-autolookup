@@ -160,8 +160,6 @@ No public attributes.
  
 ##### Class Methods
 
-**Public methods**
-
 - `LookupRequest.__init__(word)`
 
 Construct a LookupRequest instance with a word. Saves the word as an attribute
@@ -208,9 +206,6 @@ Export the list of entries found.
 
 	Raises:
 		None
-
-**Private methods**: these methods should not be used and are only listed to
-explain how they work (since we are asked to explain).
 
 - `LookupRequest._directOnlineLookup([target=None, replace=None])`
 
@@ -280,8 +275,6 @@ checked by default. The user can click on the "done" button to quit and
  
 ##### Class Methods
 
-**Public methods**
-
 - `WordlistWindow.__init__(master, quitFunc [, **kwargs])`
 
 Construct a modified tk.Frame object with scrollbar and word checklist.
@@ -315,11 +308,6 @@ function to add new word. load the word in to the queue, then the method
 	Raises:
 		None
  
-
-**Private methods**: these methods should not be used and are only listed to
-explain how they work (since we are asked to explain).
- 
-
 - `WordlistWindow._updateStatus()`
 
 Update the status label to indicate the queue length.
