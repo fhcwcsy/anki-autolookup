@@ -244,7 +244,8 @@ Below we list all classes we used in this file.
 A picture containing text to be recognized.
 ##### Constants:
 - _BNW_THRESHOLD: The constant which will be used to process the picture(see imgArray below). When the number is larger than it, we will detect it as white and set it to be 0. Otherwise, we will detect is as black and set it to be 1. We set it to be 140 here.
-- LINE_THRESHOLD: When the black point in a raw is below this constant, we will detect it as a line. Here we set it to be 3.
+- LINE_THRESHOLD: When the black pixels in a raw is less than this constant, we will detect it as a white line. Here we set it to be 3.
+- SPACE_THRESHOLD: When the black pixels in a column is less than it, we detect it as a white column. Here we set it to be 2. 
 ##### Attributes:
 - originalImg: The target picture to be recognized.
 - imgArray: The array of the image, which is processed a little bit to make it more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means white, while 1 means black)  
@@ -252,6 +253,36 @@ A picture containing text to be recognized.
 - height: The height of the picture.
 - width: The width of the picture.
 - _horizontalSum: The number of black points of each horiaontal raw of the picture.
+##### Class Methods:
+- `is_similar(s1,s2)`
+Determine whether s1 and s2 are similar or not.
+We would compare the length and the characters in them to determine whether they are similar or not.
+```
+Args:
+	s1, s2: two strings to be compared.
+        
+Return:
+        True: if they are similar.
+        False: if they are not.
+
+Raises:
+	None
+```
+- `_extractLine(lineUpperBound, lineLowerBound)`
+This method will analyze the interest region which is given by lineUpperBound and lineLowerBound. And this interest region is actually a subset of the imgarray.
+We will first sum up vertically to detect the white column. If the number of black pixels in a column is less than SPACE_THRESHOLD, we recognize it as a white column. Find the wider white column to be the divide of two words. And then we return a list of index of divide of words. 
+```
+Args:
+        lineUpperBound: The upper bound of raw of the interest region.
+        lineLowerBound: The lower bound of raw of the interest region.
+        
+Return:
+        wordIndices: a list of index of divide of words.
+
+Raise:
+        Exception: raise e
+```
+
 ### `main.py`
 
 ### `wordlist_cls.py`
