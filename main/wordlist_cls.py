@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+    anki-autolookup.wordlist_cls
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This file defines the WordlistWindow class, which is the window with all the
+    word added to be looked up. It uses threading module to lookup in the
+    background.
+"""
+
 import tkinter as tk
 import crawler
 import time
@@ -40,7 +50,7 @@ class WordlistWindow(tk.Frame):
         """Construct a modified tk.Frame object with scrollbar and word checklist.
 
         Constructor. Inherit the Frame class from tk, while adding a scrollbar,
-        and word listing feature. Takes all arguments as tk.Frame
+        and word listing feature. Takes all arguments as tk.Frame.
 
         Args:
             same as tk.Frame.
@@ -88,15 +98,15 @@ class WordlistWindow(tk.Frame):
         self._finishedWord = []
         self._thread = True
         self._interval = INTERVAL
-        self._threadInstance = threading.Thread(target=self._lookupTreading, args=())
+        self._threadInstance = threading.Thread(target=self._lookupThreading, args=())
         self._threadInstance.daemon = True
         self._threadInstance.start()
 
         self._quitFunction = quitFunc
 
-        self._updateTimer()
+        self._updateStatus()
 
-    def _lookupTreading(self):
+    def _lookupThreading(self):
         """Look up words in self._queue in the background.
 
         Uses threading module to implement multitasking, so it will continue to
@@ -130,9 +140,13 @@ class WordlistWindow(tk.Frame):
 
 
 
-    def _updateTimer(self):
+    def _updateStatus(self):
+        """
+        Update the status label to indicate the queue length.
+        """
+
         self._status.config(text=f'Status: queue {len(self._queue)}/{len(self._queue)+len(self._finishedWord)}')
-        self._status.after(500, self._updateTimer)
+        self._status.after(500, self._updateStatus)
 
 
     def _quitAndAdd(self):
@@ -141,26 +155,9 @@ class WordlistWindow(tk.Frame):
         Called when the user hit the "quit" button. The function wait until all
         cards have been looked up (the queue is empty), then add all cards to
         deck, and finally quit the window. 
-..
+
         Args:
             None
-        # Scrollable frame setup
-        tk.Frame.__init__(self, master, **kwargs)
-
-        self.vscrollbar = tk.Scrollbar(self, orient=tk.VERTICAL)
-        self.vscrollbar.pack(side='right', fill="y",  expand="false")
-        self.canvas = tk.Canvas(self,
-                                bg='#444444', bd=0,
-                                height=350,
-                                highlightthickness=0,
-                                yscrollcommand=self.vscrollbar.set)
-        self.canvas.pack(side="left", fill="both", expand="true")
-        self.vscrollbar.config(command=self.canvas.yview)
-
-        self.canvas.xview_moveto(0)
-        self.canvas.yview_moveto(0)
-
-
 
         Returns:
             None
@@ -187,13 +184,17 @@ class WordlistWindow(tk.Frame):
     
 
     def _set_scrollregion(self, event=None):
+        """
+        Update scroll region of the scrollbar.
+        """
+
         self.canvas.configure(scrollregion=self.canvas.bbox('all'))
 
     def newWord(self, word):
         """Add new words
 
         function to add new word. load the word in to the queue, then the method
-        _lookupTreading will look them up in the background.
+        _lookupThreading will look them up in the background.
 
         Args:
             word: The word to be added.

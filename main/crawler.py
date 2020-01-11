@@ -1,7 +1,10 @@
+# -*- coding: utf-8 -*-
 """
-This file defines a namedtuple Entry to represent a dictionary entry, and a
-LookupRequest class to represent a lookup in Cambridge dictionary for each word.
-The required modules are:
+    anki-autolookup.crawler
+    ~~~~~~~~~~~~~~~~~~~~~~~
+    This file defines a namedtuple Entry to represent a dictionary entry, and a
+    LookupRequest class to represent a lookup in Cambridge dictionary for each word.
+    The required modules are:
 
     - collections
     - re (reqular expression)
@@ -112,7 +115,7 @@ class LookupRequest(object):
 
 
     def onlineLookup(self):
-        """Packed lookup method. Deals with special cases.
+        """Packed lookup method. Deals exceptions and British spellings.
 
         Calls self._direcOnlineLookup(), see its docstring for detailed
         description. If the lookup result turns out to be a "...的美式拼寫",
@@ -147,8 +150,7 @@ class LookupRequest(object):
         """Look up the word and saves a list of Entry objects to self._entries.
 
         Look up the word in Cambridge online dictionary and return a list of
-        Entry objects. If the word is found to be spelled in American English,
-        the function rerun to get the correct meaning.
+        Entry objects.
         
         Arguments: 
             target: the word to look up. If the target is None, then lookup the

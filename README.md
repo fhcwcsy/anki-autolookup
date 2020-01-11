@@ -158,41 +158,211 @@ If the lookup failed, that is, no entry is found, then export will return
 
 No public attributes.
  
-##### Class Method description
+##### Class Methods
 
 **Public methods**
 
 - `LookupRequest.__init__(word)`
-	- some nested
-	- other nested
 
 Construct a LookupRequest instance with a word. Saves the word as an attribute
 without looking it up. 
 
-	- Args:
-	word: the word to be looked up
+	Args:
+		word: the word to be looked up
 
-	- Returns:
-	None
+	Returns:
+		None
 
-	- Raises:
-	None
+	Raises:
+		None
  
 
 - `LookupRequest.onlineLookup()`
 
+Packed lookup method. Deals exceptions and British spellings.
+
+Calls `self._direcOnlineLookup()`, see its explanation below for detailed
+description. If the lookup result turns out to be a "...的美式拼寫",
+then lookup again with the british spelling. If NoEntryFound exception
+was raised, then set `self._entries` to be None.
+
+	Args:
+		None
+
+	Returns:
+		None
+
+	Raises:
+		None
+ 
+
 - `LookupRequest.export() `
+
+Export the list of entries found.
+
+	Args:
+		None
+
+	Returns:
+		A list of Entry objects.
+
+	Raises:
+		None
 
 **Private methods**: these methods should not be used and are only listed to
 explain how they work (since we are asked to explain).
 
-- `LookupRequest._directOnlineLookup([target, replace])`
+- `LookupRequest._directOnlineLookup([target=None, replace=None])`
+
+Look up the word and saves a list of Entry objects to `self._entries`.
+
+Look up the word in Cambridge online dictionary and return a list of
+Entry objects. 
+
+	Args: 
+		target: the word to look up. If the target is None, then lookup the
+			word saved in self._word. Default value: None
+		replace: Default value: None. If replace is not none, then the target
+			word will be replaced with replace in the entries.
+
+	return:
+		None
+
+	raises: 
+		Raises NoEntryFound exception if the page is empty.
 
 ### `imgrecog.py`
 
 ### `main.py`
 
 ### `wordlist_cls.py`
+
+This file defines the WordlistWindow class, which is the window with all the
+word added to be looked up. It uses threading module to lookup in the
+background.
+ 
+Below we list all the classes defined in this file.
+
+#### WordlistWindow
+
+A class defining the frame listing all the words to be added.
+    
+The design of this class is based on the answer [here](https://stackoverflow.com/questions/23483629/dynamically-adding-checkboxes-into-scrollable-frame)
+
+This class inherit tk.Frame. Initiate the window by  constructing an
+instance as a normal tk.Frame:
+
+```
+	w = WordlistWindow(master, quitFunc)
+```
+
+Then pack/grid to show the frame. Use
+
+```
+	w.newWord('MyWord')
+```
+
+to add a new word. The word should pop up in the list immediately, unless it
+is already in the list. A lookup process will be initiated in the background
+once the object is constructed. Each word added with `newWord()` method will
+be added to a queue, and will be looked up one by one in the background with
+threading module. The words added to the list should have its checkbutton 
+checked by default. The user can click on the "done" button to quit and 
+`quitFunc()` will be called, which can be used to close the window.
+
+##### Attributes
+
+- vscrollbar: The vertical tk.Scrollbar object on the right.
+
+- canvas: The tk.Canvas in the background of the frame.
+
+- interior: a tk.Frame object that everything lie on.
+ 
+##### Class Methods
+
+**Public methods**
+
+- `WordlistWindow.__init__(master, quitFunc [, **kwargs])`
+
+Construct a modified tk.Frame object with scrollbar and word checklist.
+
+Constructor. Inherit the Frame class from tk, while adding a scrollbar,
+and word listing feature. Takes all arguments as tk.Frame.
+
+	Args:
+		same as tk.Frame.
+
+	Return:
+		None
+
+	Raises:
+		None
+ 
+
+- `WordlistWindow.newWord(word)`
+
+Add new words
+
+function to add new word. load the word in to the queue, then the method
+`_lookupThreading` will look them up in the background.
+
+	Args:
+		word: The word to be added.
+
+	Returns:
+		None
+
+	Raises:
+		None
+ 
+
+**Private methods**: these methods should not be used and are only listed to
+explain how they work (since we are asked to explain).
+ 
+
+- `WordlistWindow._updateStatus()`
+
+Update the status label to indicate the queue length.
+
+- `WordlistWindow._lookupThreading()`
+
+Look up words in `self._queue` in the background.
+
+Uses threading module to implement multitasking, so it will continue to
+lookup words (the speed depends on the internet speed) while the user
+input words (the speed depends on CPU and GPU).
+
+	Args:
+		None
+
+	Returns:
+		None
+
+	Raises:
+		None
+ 
+- `WordlistWindow._quitAndAdd()`
+
+Add the words checked and quit.
+
+Called when the user hit the "quit" button. The function wait until all
+cards have been looked up (the queue is empty), then add all cards to
+deck, and finally quit the window. 
+
+	Args:
+		None
+
+	Returns:
+		None
+
+	Raises:
+		None
+ 
+
+- `WordlistWindow._set_scrollregion([event=None])`
+
+Update scroll region of the scrollbar.
+ 
 
 ### `word_lookup.py`
 
