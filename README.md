@@ -1,8 +1,11 @@
 # Anki Autolookup
 
+This is a final project from a programming course. It may not be maintained, but
+feel free to contact us if you want to contribute or maintain this project. 
+
 ## Installation
 
-This program is only tested on Ubuntu 19.04 and Ubuntu 19.10. To use it you need
+**This program is only tested on Ubuntu 19.04 and Ubuntu 19.10**. To use it you need
 to clone the project first:
 ```{bash}
 git clone https://github.com/fhcwcsy/anki-autolookup.git
@@ -88,10 +91,16 @@ Entry(word, partOfSpeech, pronunciation, listOfDefinitions, listOfExamples)
 ##### Attributes:
 
 - word: a string saving the word.
+
 - pos: part of speech. A string.
+
 - pronounciation: A string, which is the pronunciation of that word.
-- definitions: A list of definition of the word. Must have the same order with examples (see examples below).
-- examples: A list of list of examples of the word, corresponding the definitions. Must have the same order with definitions (see examples below.)
+
+- definitions: A list of definition of the word. Must have the same order with
+examples (see examples below).
+
+- examples: A list of list of examples of the word, corresponding the definitions. 
+Must have the same order with definitions (see examples below.)
 
 ##### Example:
 
@@ -143,7 +152,7 @@ Finally, export the result, which is usually a list of Entry objects, with
 result = w.export()
 ```
 If the lookup failed, that is, no entry is found, then export will return
-None.
+`None`.
 
 ##### Attributes
 
@@ -151,7 +160,30 @@ No public attributes.
  
 ##### Class Method description
 
+**Public methods**
 
+- `LookupRequest.__init__(word)`
+Construct a LookupRequest instance with a word. Saves the word as an attribute
+without looking it up. 
+
+	Args:
+	word: the word to be looked up
+
+	Returns:
+	None
+
+	Raises:
+	None
+ 
+
+- `LookupRequest.onlineLookup()`
+
+- `LookupRequest.export() `
+
+**Private methods**: these methods should not be used and are only listed to
+explain how they work (since we are asked to explain).
+
+- `LookupRequest._directOnlineLookup([target, replace])`
 
 ### `imgrecog.py`
 
@@ -161,13 +193,15 @@ No public attributes.
 
 ### `word_lookup.py`
 
-## Contribution
+## Collaborators
 
 - 張家翔 ([hsiang20](https://github.com/hsiang20)): API adaptor (`add_card.py`),
-single word lookup feature GUI design (`word_lookup.py`), main menu GUI design (`main.py`).
+single word lookup feature GUI design (`word_lookup.py`), main menu GUI design
+(`main.py`).
 
 - 徐鼎翔 ([AlbertHsuNTUphys](https://github.com/AlbertHsuNTUphys)): Image 
 recognition feature (`imgrecog`), article lookup GUI design (`article_lookup.py`).
 
 - 王昊謙 ([fhcwcsy](https://github.com/fhcwcsy)): Wordlist window GUI design 
-(`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition, final modification on all files.
+(`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition,
+final modification in all files.
