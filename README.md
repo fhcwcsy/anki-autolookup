@@ -152,6 +152,7 @@ No public attributes.
 ##### Class Method description
 
 
+
 ### `imgrecog.py`
 
 ### `main.py`
@@ -162,6 +163,11 @@ No public attributes.
 
 ## Contribution
 
-- 張家翔 ([hsiang20](https://github.com/hsiang20)): API adaptor (`add_card.py`), single word lookup feature GUI design (`word_lookup.py`), main menu GUI design (`main.py`).
-- 徐鼎翔 ([AlbertHsuNTUphys](https://github.com/AlbertHsuNTUphys)): Image recognition feature (`imgrecog`), article lookup GUI design (`article_lookup.py`).
-- 王昊謙 ([fhcwcsy](https://github.com/fhcwcsy)): Wordlist window GUI design (`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition, final modification on all files.
+- 張家翔 ([hsiang20](https://github.com/hsiang20)): API adaptor (`add_card.py`),
+single word lookup feature GUI design (`word_lookup.py`), main menu GUI design (`main.py`).
+
+- 徐鼎翔 ([AlbertHsuNTUphys](https://github.com/AlbertHsuNTUphys)): Image 
+recognition feature (`imgrecog`), article lookup GUI design (`article_lookup.py`).
+
+- 王昊謙 ([fhcwcsy](https://github.com/fhcwcsy)): Wordlist window GUI design 
+(`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition, final modification on all files.
