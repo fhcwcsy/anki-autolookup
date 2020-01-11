@@ -29,6 +29,10 @@ then use `46741504` and `2055492159` to add the plugins.
 ./start.sh
 ```
 
+## Demonstration
+
+[Youtube video](https://youtu.be/YkgdMulFnBs)
+
 ## File Description
 
 ```
@@ -43,7 +47,6 @@ then use `46741504` and `2055492159` to add the plugins.
 |   +-- dic.xlsx: A spreadsheet with data about word usage in a variety of sources.
 |   +-- imgrecog.py: The script for word lookup from images.
 |   +-- main.py
-|   +-- ui.py:
 |   +-- wordlist_cls.py: The script defining the wordlist window.
 |   +-- word_lookup.py:
 +-- presentation: Slides used (Tex and pdf files) for presentation in class.
@@ -60,11 +63,98 @@ Below we lists detailed descriptions for each script.
 
 ### `cralwer.py`
 
+This file defines a namedtuple Entry to represent a dictionary entry, and a
+LookupRequest class to represent a lookup in [Cambridge Dictionary](https://dictionary.cambridge.org/zht/%E8%A9%9E%E5%85%B8/%E8%8B%B1%E8%AA%9E-%E6%BC%A2%E8%AA%9E-%E7%B9%81%E9%AB%94/)
+for each word. The required modules are:
+
+- collections
+- re (reqular expression)
+- requests
+- urllib
+- bs4 (BeautifulSoup)
+
+Below we list all the classes defined in this file.
+
+#### Entry
+
+A namedtuple representing an entry in a dictionary of a looked-up word.
+
+##### Usage:
+
+```
+Entry(word, partOfSpeech, pronunciation, listOfDefinitions, listOfExamples)
+```
+
+##### Attributes:
+
+- word: a string saving the word.
+- pos: part of speech. A string.
+- pronounciation: A string, which is the pronunciation of that word.
+- definitions: A list of definition of the word. Must have the same order with examples (see examples below).
+- examples: A list of list of examples of the word, corresponding the definitions. Must have the same order with definitions (see examples below.)
+
+##### Example:
+
+```
+w = Entry('dynamic',
+
+	['adjective. 思維活躍的；活潑的，充滿活力的，精力充沛的',
+	'adjective. 不斷變化的；不斷發展的'], 
+
+	[['She's young and dynamic and will be a great addition to the team.',
+	'We need a dynamic expansion of trade with other countries.'], 
+	['Business innovation is a dynamic process.', 
+	'The situation is dynamic and may change at any time.']],
+
+	'/daɪˈnæm.ɪk/')
+
+w.word = 'dynamic'
+
+w.definitions = 
+	['adjective. 思維活躍的；活潑的，充滿活力的，精力充沛的', 
+	'adjective. 不斷變化的；不斷發展的']
+
+w.examples = 
+	[['She's young and dynamic and will be a great addition to the team.',
+	'We need a dynamic expansion of trade with other countries.'], 
+	['Business innovation is a dynamic process.', 'The situation is
+	dynamic and may change at any time.']]
+
+w.pronunciation() = '/daɪˈnæm.ɪk/'
+```
+
+#### LookupRequest 
+
+A class to save a word, look it up and save its lookup results.
+
+##### Usage
+
+To construct an object, use:
+```
+w = LookupRequest('MyWord')
+```
+
+To tell it to look up itself, use
+```
+w.onlineLookup()
+```
+Finally, export the result, which is usually a list of Entry objects, with
+```
+result = w.export()
+```
+If the lookup failed, that is, no entry is found, then export will return
+None.
+
+##### Attributes
+
+No public attributes.
+ 
+##### Class Method description
+
+
 ### `imgrecog.py`
 
 ### `main.py`
-
-### `ui.py`
 
 ### `wordlist_cls.py`
 
@@ -72,3 +162,6 @@ Below we lists detailed descriptions for each script.
 
 ## Contribution
 
+- 張家翔 ([hsiang20](https://github.com/hsiang20)): API adaptor (`add_card.py`), single word lookup feature GUI design (`word_lookup.py`), main menu GUI design (`main.py`).
+- 徐鼎翔 ([AlbertHsuNTUphys](https://github.com/AlbertHsuNTUphys)): Image recognition feature (`imgrecog`), article lookup GUI design (`article_lookup.py`).
+- 王昊謙 ([fhcwcsy](https://github.com/fhcwcsy)): Wordlist window GUI design (`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition, final modification on all files.
