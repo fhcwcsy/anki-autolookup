@@ -230,6 +230,28 @@ Entry objects.
 
 ### `imgrecog.py`
 
+This file will create a window .Users can select a picture file, and it would be shown in this window. When users click on the word of it, this program will recognize the word and generate the vocabulary card. The required modules are:
+
+-  PIL
+-  numpy
+-  pytesseract
+-  re
+-  tkinter
+
+Below we list all classes we used in this file.
+
+#### Text Picture
+A picture containing text to be recognized.
+##### Constants:
+- _BNW_THRESHOLD: The constant which will be used to process the picture(see imgArray below). When the number is larger than it, we will detect it as white and set it to be 0. Otherwise, we will detect is as black and set it to be 1. We set it to be 140 here.
+- LINE_THRESHOLD: When the black point in a raw is below this constant, we will detect it as a line. Here we set it to be 3.
+##### Attributes:
+- originalImg: The target picture to be recognized.
+- imgArray: The array of the image, which is processed a little bit to make it more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means white, while 1 means black)  
+- processedImg: The processed image mentioned above.
+- height: The height of the picture.
+- width: The width of the picture.
+- _horizontalSum: The number of black points of each horiaontal raw of the picture.
 ### `main.py`
 
 ### `wordlist_cls.py`
