@@ -85,6 +85,7 @@ Here we list the important one only, others is not important.
 - difficulty: The difficulty of the words we want to find. The less the more difficult the word is. ( It is actually the normalized frequency we would mention later )
 ##### Class Methods
 - `__init__(self)`
+
     Create two windows. 
 
     One is `_inputWindow` where the users enter the article and determine the difficulty of words they want.
@@ -100,6 +101,7 @@ Here we list the important one only, others is not important.
     Raise:
             None
 - `_quitwindow()`
+
     Destroy / Quit the windows after users used it.
 ```
     Args:
@@ -112,6 +114,7 @@ Here we list the important one only, others is not important.
             None
 ```
 - `getWordlist()`
+
     Read the excel sheet ( This is the reference what we mentioned in Basic Idea ) and convert it into a dictinary containing the words and its frequency/max_frequency.
 ```
 Args:
@@ -124,6 +127,7 @@ Raise:
         None
 ```
 - `getArticle(text)`
+
     Read the text , cut it into words, then add them into a set.
 ```
     Args:
@@ -136,6 +140,7 @@ Raise:
             None
 ```
 - `dictLookup(word, d)`
+
     Local wordlist lookup. Check if the word is in the wordlist and get its frequency. Also check the stripped words if the word matches any common suffixes.
 ```
     Args:
@@ -150,6 +155,7 @@ Raise:
             None
 ```
 - `setLookup(s, dictionary)`
+
     Look up each word in the set in the local wordlist. If the word is found and its frequency is below the self.difficulty, then recognize it as difficult word. 
 ```
     Args:
@@ -163,6 +169,7 @@ Raise:
             None
 ```
 - `_lookup()`
+
     This function will first get the difficulty users set. Use it to find the difficult words in the article, and add it to the `_wordwindow`.
 ```
     Args:
@@ -398,6 +405,7 @@ Raise:
         Exception: raise e
 ```
 - `recognizeWord(wordX,wordY):`
+
     This function is designed to recognize the word on the position(wordX, wordY).
 
     Here, we will first find the nearst white raws to detect the line which the word belong to. Use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
@@ -415,6 +423,7 @@ Raise:
     Raise:
             none
 - `bindEvent(event)`:
+
     When the event is occured, we will return the word on the position (event.x, event.y)
     ```
     Args:
