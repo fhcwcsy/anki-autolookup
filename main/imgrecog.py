@@ -21,6 +21,7 @@ import time
 # from scipy.fftpack import fft,ifft
 import tkinter as tk
 import wordlist_cls
+from tkinter import messagebox
 # import os
 
 def timer(func):
@@ -290,9 +291,14 @@ class ImgRecognitionWindow(TextPicture):
         Raise:
                 None
         """
-        self._img_path = tk.filedialog.askopenfilename(title=
-                'Choose your image.')
-        img = Image.open(self._img_path)
+        while True:
+            try:
+                self._img_path = tk.filedialog.askopenfilename(title='Choose your image.')
+                img = Image.open(self._img_path)
+                break
+            except:
+                messagebox.showerror('Error', 'File need to be picture.')
+                pass
 
         self._picWindow = tk.Toplevel()
         self._wordWindow = tk.Toplevel()
