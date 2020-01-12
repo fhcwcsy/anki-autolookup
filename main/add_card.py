@@ -8,7 +8,7 @@ Entry = namedtuple('Entry',
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
  
 my_model = "anki_auto-lookup"
-deckName = 'test'
+deckName = None
 
 class Request:
 
@@ -112,7 +112,10 @@ def create_model():
 
 def new_deck_name(name):
     global deckName
+    if name == '':
+        return None
     deckName = name
+    return True
 
 
 

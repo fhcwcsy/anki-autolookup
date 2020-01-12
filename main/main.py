@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 import imgrecog
 import tkinter.filedialog
 import word_lookup
@@ -16,6 +17,7 @@ class lookupGUI:
         self.master.geometry('800x600')
         self.master.configure(background='white')
         
+        
         self.deck_name_prompt = tk.Label(self.master, text='Please select the deck you want to add cards to:', bg='white', font=('Arial', 15))
         self.deck_name_prompt.pack()
         
@@ -29,8 +31,6 @@ class lookupGUI:
         self._decksmenu = tk.OptionMenu(self.master, self.targetDeck, *self.decknames)
         self._decksmenu.pack()
 
-        # self._deck_name_text = tk.Text(self.master, height=1, width=20)
-        # self._deck_name_text.pack()
         word_lookup_button = tk.Button(self.master, text='Word Lookup', fg='white',
                 bg='blue', command=self.wordlookup, font=('Arial', 20), width=20)
         word_lookup_button.pack()
@@ -49,9 +49,11 @@ class lookupGUI:
         
         self.master.mainloop() 
 
+
     def imagelookup(self):
-        add_card.new_deck_name(self.targetDeck.get())
- 
+        if add_card.new_deck_name(self.targetDeck.get()) == None:
+            messagebox.showerror("Error", "Please select the deck you want to add cards to.")
+            return   
         self.master.withdraw() 
         self.imageRecog = imgrecog.ImgRecognitionWindow() 
         self.master.update()
@@ -59,8 +61,9 @@ class lookupGUI:
 
 
     def wordlookup(self):
-        add_card.new_deck_name(self.targetDeck.get())
- 
+        if add_card.new_deck_name(self.targetDeck.get()) == None:
+            messagebox.showerror("Error", "Please select the deck you want to add cards to.")
+            return
         self.master.withdraw() 
         self._wordlookup = word_lookup.WordLookupWindow()
         self.master.update()
@@ -68,8 +71,9 @@ class lookupGUI:
 
 
     def articlelookup(self):
-        add_card.new_deck_name(self.targetDeck.get())
- 
+        if add_card.new_deck_name(self.targetDeck.get()) == None:
+            messagebox.showerror("Error", "Please select the deck you want to add cards to.")
+            return  
         self.master.withdraw() 
         self._articlelookup = article_lookup.ArticleRecognitionWindow() 
         self.master.update()
@@ -83,6 +87,8 @@ class lookupGUI:
         try:
             dn = self._getDecks()
             self.decknames = tuple(dn)
+            self.deck_name_prompt.configure(text='Please select the deck you want to add cards to: ')
+ 
         except Exception as e:
             self.decknames = tuple([None])
             self.deck_name_prompt.configure(text='Failed to connect with API. Please check that you have\nall the prerequisite installed then click "refresh".')
@@ -96,28 +102,6 @@ class lookupGUI:
         for option in self.decknames:
             self._decksmenu['menu'].add_command(label=option, command=tk._setit(self.targetDeck, option)) 
         # print(self.decknames)
-
-'''
-
-
-article_lookup_frame = tk.Frame(window)
-article_lookup_frame.pack()
-article_lookup_label = tk.Label(article_lookup_frame, text='Article to lookup: ', bg='white', font=('Arial', 12))
-article_lookup_label.pack(side=tk.LEFT)
-article_lookup_entry = tk.Entry(article_lookup_frame, font=('Arial', 12), bg='White')
-article_lookup_entry.pack(side=tk.LEFT)
-
-
-
-
-
-
-search_button = tk.Button(window, text='LOOKUP!', command=word_lookup, fg='red', bg='blue', font=('Arial', 20))
-search_button.pack()
-
-jump_button = tk.Button(window, text='jump!', command=jump)
-jump_button.pack()
-'''
 
 
 
