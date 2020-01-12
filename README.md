@@ -68,10 +68,9 @@ to understand the program. They are only listed because we are asked to do so.**
 This program will create a lookup window where you can enter an article and choose the difficulty of words you want. The program will find the difficult words of the article. Then, users can choose which difficult words they want to make the vocabulary cards in anki. The required modules are:
 
 - tkinter
-- re
+- re (regular expression)
 - wordlist_cls: This module is created by us.
-- from openpyxl import load_workbook 
-- from tkinter import messagebox
+- openpyxl 
 
 Below we list all the classes in this file.
 #### ArticleRecognitionWindow
@@ -353,7 +352,7 @@ This file will create a window .Users can select a picture file, and it would be
 -  PIL
 -  numpy
 -  pytesseract
--  re
+-  re (regular expression)
 -  tkinter
 
 Below we list all classes we used in this file.
