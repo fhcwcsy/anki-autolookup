@@ -85,7 +85,7 @@ Here we list the important one only, others is not important.
 - difficulty: The difficulty of the words we want to find. The less the more difficult the word is. ( It is actually the normalized frequency we would mention later )
 ##### Class Methods
 - `__init__(self)`
-Create two windows. 
+    Create two windows. 
 
     One is `_inputWindow` where the users enter the article and determine the difficulty of words they want.
     
@@ -100,7 +100,7 @@ Create two windows.
     Raise:
             None
 - `_quitwindow()`
-Destroy / Quit the windows after users used it.
+    Destroy / Quit the windows after users used it.
 ```
     Args:
             None
@@ -112,7 +112,7 @@ Destroy / Quit the windows after users used it.
             None
 ```
 - `getWordlist()`
-Read the excel sheet ( This is the reference what we mentioned in Basic Idea ) and convert it into a dictinary containing the words and its frequency/max_frequency.
+    Read the excel sheet ( This is the reference what we mentioned in Basic Idea ) and convert it into a dictinary containing the words and its frequency/max_frequency.
 ```
 Args:
         None
@@ -124,7 +124,7 @@ Raise:
         None
 ```
 - `getArticle(text)`
-Read the text , cut it into words, then add them into a set.
+    Read the text , cut it into words, then add them into a set.
 ```
     Args:
             text: The article we want to anaylze.
@@ -136,7 +136,7 @@ Read the text , cut it into words, then add them into a set.
             None
 ```
 - `dictLookup(word, d)`
-Local wordlist lookup. Check if the word is in the wordlist and get its frequency. Also check the stripped words if the word matches any common suffixes.
+    Local wordlist lookup. Check if the word is in the wordlist and get its frequency. Also check the stripped words if the word matches any common suffixes.
 ```
     Args:
             word: the word to look up
@@ -150,7 +150,7 @@ Local wordlist lookup. Check if the word is in the wordlist and get its frequenc
             None
 ```
 - `setLookup(s, dictionary)`
-Look up each word in the set in the local wordlist. If the word is found and its frequency is below the self.difficulty, then recognize it as difficult word. 
+    Look up each word in the set in the local wordlist. If the word is found and its frequency is below the self.difficulty, then recognize it as difficult word. 
 ```
     Args:
             s: a set containing the words to be looked up.
@@ -163,7 +163,7 @@ Look up each word in the set in the local wordlist. If the word is found and its
             None
 ```
 - `_lookup()`
-This function will first get the difficulty users set. Use it to find the difficult words in the article, and add it to the `_wordwindow`.
+    This function will first get the difficulty users set. Use it to find the difficult words in the article, and add it to the `_wordwindow`.
 ```
     Args:
             None
@@ -367,9 +367,9 @@ A picture containing text to be recognized.
 ##### Class Methods:
 - `_is_similar(s1,s2)`
 
-Determine whether s1 and s2 are similar or not.
+    Determine whether s1 and s2 are similar or not.
 
-We would compare the length and the characters in them to determine whether they are similar or not.
+    We would compare the length and the characters in them to determine whether they are similar or not.
 ```
 Args:
 	s1, s2: two strings to be compared.
@@ -382,7 +382,8 @@ Raises:
 	None
 ```
 - `_extractLine(lineUpperBound, lineLowerBound)`
-This method will analyze the interest region which is given by lineUpperBound and lineLowerBound. And this interest region is actually a subset of the imgarray.
+
+    This method will analyze the interest region which is given by lineUpperBound and lineLowerBound. And this interest region is actually a subset of the imgarray.
 
     We will first sum up vertically to detect the white column. If the number of black pixels in a column is less than SPACE_THRESHOLD, we recognize it as a white column. Find the wider white column to be the divide of two words. And then we return a list of index of divide of words. 
 ```
@@ -397,7 +398,7 @@ Raise:
         Exception: raise e
 ```
 - `recognizeWord(wordX,wordY):`
-This function is designed to recognize the word on the position(wordX, wordY).
+    This function is designed to recognize the word on the position(wordX, wordY).
 
     Here, we will first find the nearst white raws to detect the line which the word belong to. Use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
 
@@ -425,7 +426,8 @@ This function is designed to recognize the word on the position(wordX, wordY).
     Raise:
             none
 #### ImgRecognitionWindow
- A singleton class. Defines the window showing the image. The user clicks
+     
+A singleton class. Defines the window showing the image. The user clicks
     on words they want to look up and it will be shown in the wordlist on the
     right.
 
