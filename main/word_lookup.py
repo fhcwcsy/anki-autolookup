@@ -20,7 +20,7 @@ class WordLookupWindow(object):
     keyed in.
 
     Attribute:
-            No public attribute.
+        No public attribute.
     """
     def __init__(self):
         self._wordlistWindow = tk.Toplevel()
@@ -49,16 +49,16 @@ class WordLookupWindow(object):
 
     def _quitWindow(self):
         """
-        Destroy / Quit the windows after users click "Done".
+        Destroy/quit the windows after users click "Done".
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                None
+            None
         """
         self._wordlistWindow.destroy()
         self._wordlistWindow.update()
@@ -75,14 +75,14 @@ class WordLookupWindow(object):
         in and put it in the wordlist window.
         
         Args:
-                event: The action users did. We bind the "Enter" button to 
-                this function, so there is no need to fill this argument.
+            event: The action users did. We bind the "Enter" button to 
+            this function, so there is no need to fill this argument.
         
         Return:
-                None
+            None
 
         Raise:
-                None 
+            None 
         """
         word = self._outputbox.get(1.0, tk.END)
         self.word = word[:-1]

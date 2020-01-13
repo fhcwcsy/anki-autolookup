@@ -4,12 +4,12 @@ in and what lookup function you want to use. It contains an option menu to
 select the deck, a button to refresh the decks, and three buttons to select the 
 functions. The required modules are:
 
--tkinter
--messagebox (tkinter)
--filedialog (tkinter)
--abspath (os.path)
--dirname (os.path)
--chdir (os)
+- tkinter
+- messagebox (tkinter)
+- filedialog (tkinter)
+- abspath (os.path)
+- dirname (os.path)
+- chdir (os)
 """
 import tkinter as tk
 from tkinter import messagebox
@@ -38,7 +38,8 @@ class lookupGUI:
     connect with the user's anki, this menu will show nothing.
 
     Attributes:
-            No public attributes.
+        No public attributes.
+
     """
     def __init__(self):
         self._definitions = ''

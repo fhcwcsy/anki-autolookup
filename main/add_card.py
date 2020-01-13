@@ -1,16 +1,18 @@
 """
-    This file defines a Request class and three functions (add_note, 
-    create_model, new_deck_name), to connect to anki API and convert the 
-    information got by `crawler.py` to cards in anki.
-    The required modules are:
-    
-    -json
-    -urllib.request
-    -collections (namedtuple)
+This file defines a Request class and three functions (add_note, 
+create_model, new_deck_name), to connect to anki API and convert the 
+information obtained by `crawler.py` to cards in anki.
+
+The required modules are:
+
+- json
+- urllib.request
+- collections (namedtuple)
 """
+
+from collections import namedtuple
 import json
 import urllib.request
-from collections import namedtuple
 
 Entry = namedtuple('Entry', 
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
@@ -101,7 +103,7 @@ def add_note(wordinfo):
     This function rearrange the information got by `crawler` to fit the model.
 
     Args:
-        wordinfo: The Entry (a list) got by the crawler. The format is 
+        wordinfo: A list of Entry objects obtained by the crawler. The format is 
         demonstrated in `crawler.py`.
 
     Returns:
@@ -161,6 +163,7 @@ def create_model():
     This function creates a card model using html. Using class `Request` and 
     action "modelName" to check if "my_model" is one of the user's deck name. 
     If not, create one using class `Request` and action "createModel".
+
     Args:
         None
 
