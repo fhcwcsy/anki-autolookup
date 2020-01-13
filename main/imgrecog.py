@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Picture to word analysis
-
-TODO: description
-
-Required modules:
-    pytesseract
-
-Example:
-    TODO
-
-
+"""
+This file will create a window .Users can select a picture file, and it 
+would be shown in this window.When users click on the word of it, this program 
+will recognize the word and generate the vocabulary card.The required modules
+are:
+-  PIL
+-  numpy
+-  pytesseract
+-  re
+-  tkinter
 """  
-
-
 from PIL import Image, ImageTk
 import numpy as np
 import pytesseract
@@ -24,6 +21,7 @@ import time
 # from scipy.fftpack import fft,ifft
 import tkinter as tk
 import wordlist_cls
+from tkinter import messagebox
 # import os
 
 def timer(func):
@@ -44,30 +42,79 @@ class TextPicture():
     """A picture containing text to be recognized."""
 
     IMAGE_PATH = './img3.jpg'
-    LINE_THRESHOLD = 3
+    LINE_THRESHOLD = 3 
+    """
+    When the black pixels in a raw is less than this constant,
+    we will detect it as a white line.
+    """
     _BNW_THRESHOLD = 140
+    """
+    The constant which will be used to process the picture(see imgArray below).
+    When the number is larger than it, we will detect it as white and set it
+    to be 0. Otherwise, we will detect is as black and set it to be 1.
+    """
     SPACE_THRESHOLD = 2
-
+    """
+    When the black pixels in a column is less than it,
+    we detect it as a white column.
+    """
     def __init__(self, img):
         """Constructor. Takes the path to the picture as an argument. """
-        self.originalImg = img
-
+        self.originalImg = img #The target picture to be recognized.
         self.imgArray = np.floor_divide(
                 np.array(self.originalImg.convert('L')), TextPicture._BNW_THRESHOLD)
         self.processedImg = Image.fromarray(np.multiply(self.imgArray, 255))
-        self.height, self.width = self.imgArray.shape
+        """
+        The processed image mentioned in imgArray.
+        """
+        self.height, self.width = self.imgArray.shape #The size of the picture.
+        
         self.imgArray = np.subtract(1, self.imgArray)
-        self._horizontalSum = np.sum(self.imgArray, axis=1)
+        """The array of the image, which is processed a little bit to make it
+        more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means
+        white, while 1 means black)
+        """
+        self._horizontalSum = np.sum(self.imgArray, axis=1) 
+        """The number of black points of each horiaontal raw of the picture."""
         # plt.matshow(self.processedImg)
         # plt.plot(self._horizontalSum)
         # plt.show() 
          
 
     def bindEvent(self, event):
+        """
+        When the event is occured, we will return the word on the 
+        position (event.x, event.y)
+    
+        Args:
+                event: The event that triggers the function recognizeWord.
+            
+        Return:
+                recognizeWord(event.x, event.y)
+    
+        Raise:
+                None
+        """
         # print(f'mouse location: ({event.x}, {event.y})')
         return self.recognizeWord(event.x, event.y)
 
     def _is_similar(self, s1,s2):
+        """
+        Determine whether s1 and s2 are similar or not.
+
+        We would compare the length and the characters in them to determine 
+        whether they are similar or not.
+
+        Args:
+                s1, s2: two strings to be compared.
+        
+        Return:
+                True: if they are similar.
+                False: if they are not.
+
+        Raises:
+	        None
+        """
         if abs(len(s1)-len(s2))>2:
             return False
         n = 0
@@ -84,6 +131,25 @@ class TextPicture():
 
     def recognizeWord(self, wordX, wordY):
         # print('X:', wordX)
+        """
+        This function is designed to recognize the word on the
+        position(wordX, wordY).
+
+        Args:
+                WordX, WordY: The position of the word we want to recognize.
+    
+        Return:
+                The word we recognize. Type: str
+    
+        Raise:
+                None
+        """
+
+        """
+        Here, we will first find the nearst white raws to detect the line
+        which the word belong to. Use 
+        _extractLine(lineUpperBound, lineLowerBound) to divide the words.
+        """
         lineUpperBound = wordY
         lineLowerBound = wordY+1
         while self._horizontalSum[lineUpperBound] > 4:
@@ -99,7 +165,14 @@ class TextPicture():
                 rightBound = wordIndices[i+1]
                 wordOrder = i
                 break
-
+        """
+        Then, we put the image of the line into pytesseract to transform
+        image to English. Use the order of the word in the string to
+        get targetWordFromLine. But sometimes the order may be detected wrong.
+        So we chop the image of the word and use pytesseract to get 
+        targetWordFromWord, which may have lower precision than the word
+        detected in whole line. 
+        """
         lineCrop = self.originalImg.crop((
                 0, lineUpperBound, self.width-1, lineLowerBound))
         lineText = pytesseract.image_to_string(lineCrop, lang = 'eng')
@@ -112,6 +185,14 @@ class TextPicture():
         targetWordFromWord = pytesseract.image_to_string(wordCrop, lang = 'eng')
         # print(targetWordFromLine, targetWordFromWord)
         # print(targetWordFromLine)
+        """
+        Last, we use _is_similar(s1, s2) to compare targetWordFromLine and 
+        targetWordFromWord. If they are similar, then return 
+        targetWordFromLine, which has higher precision. When they are not 
+        similar, it implies that the order of the word in line may be
+        detected wrong. Thus, targetWordFromLine may be wrong,
+        so we return targetWordFromWord instead.
+        """
         if self._is_similar(targetWordFromLine, targetWordFromWord):
             return targetWordFromLine
         elif len(targetWordFromWord)==0:
@@ -122,6 +203,26 @@ class TextPicture():
 
 
     def _extractLine(self, lineUpperBound, lineLowerBound):
+        """
+        This method will analyze the interest region which is given by
+        lineUpperBound and lineLowerBound. And this interest region is actually
+        a subset of the imgarray.
+
+        We will first sum up vertically to detect the white column. If the
+        number of black pixels in a column is less than SPACE_THRESHOLD, we
+        recognize it as a white column. Find the wider white column to be the
+        divide of two words. And then we return a list of index of divide of words. 
+
+        Args:
+                lineUpperBound: The upper bound of raw of the interest region.
+                lineLowerBound: The lower bound of raw of the interest region.
+        
+        Return:
+                wordIndices: a list of index of divide of words.
+
+        Raise:
+                Exception: raise e
+        """
         # print(lineUpperBound, lineLowerBound)
         try:
             # sum vertically, convert to bool then back to int so the columns 
@@ -162,7 +263,7 @@ class ImgRecognitionWindow(TextPicture):
     """
     A singleton class. Defines the window showing the image. The user clicks
     on words they want to look up and it will be shown in the wordlist on the
-    right.
+    right. More, it is inherited from `TextPicture`
     """
     _instance = None
     
@@ -172,9 +273,32 @@ class ImgRecognitionWindow(TextPicture):
         return cls._instance
 
     def __init__(self):
-        self._img_path = tk.filedialog.askopenfilename(title=
-                'Choose your image.')
-        img = Image.open(self._img_path)
+        """
+        Here will create two windows.
+    
+        _picwindow will show the picture users choose (We will let users 
+        choose the file they want first). And users can click the word on it.
+    
+        _wordWindow will show the word users click. And then let the users
+        choose which words they want to make the vocabulary cards.
+
+        Args:
+                None
+    
+        Return:
+                None
+            
+        Raise:
+                None
+        """
+        while True:
+            try:
+                self._img_path = tk.filedialog.askopenfilename(title='Choose your image.')
+                img = Image.open(self._img_path)
+                break
+            except:
+                messagebox.showerror('Error', 'File need to be picture.')
+                pass
 
         self._picWindow = tk.Toplevel()
         self._wordWindow = tk.Toplevel()
@@ -189,7 +313,6 @@ class ImgRecognitionWindow(TextPicture):
                     (int(img.size[0]/resizeRatio),
                     int(img.size[1]/resizeRatio)))
         
-        print(img.size)
         TextPicture.__init__(self, img)
         # exit()
 
@@ -214,6 +337,18 @@ class ImgRecognitionWindow(TextPicture):
         tk.mainloop()
 
     def quitWindow(self):
+        """
+        Destroy / Quit the windows after users used it.
+
+        Args:
+                None
+            
+        Return:
+                None
+            
+        Raise:
+                None
+        """
         self._wordWindow.destroy()
         self._wordWindow.update()
         self._picWindow.destroy()
@@ -222,6 +357,19 @@ class ImgRecognitionWindow(TextPicture):
         self._picWindow.quit()
 
     def bindEvent(self, event):
+        """
+        When the event occured, We will detect the word users click and add it
+        to the `_wordWindow`
+
+        Args:
+                None
+            
+        Return:
+                None
+            
+        Raise:
+                None
+        """
         word = super().bindEvent(event)
         self.wlist.newWord(word)
  

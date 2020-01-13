@@ -68,10 +68,9 @@ to understand the program. They are only listed because we are asked to do so.**
 This program will create a lookup window where you can enter an article and choose the difficulty of words you want. The program will find the difficult words of the article. Then, users can choose which difficult words they want to make the vocabulary cards in anki. The required modules are:
 
 - tkinter
-- re
+- re (regular expression)
 - wordlist_cls: This module is created by us.
-- from openpyxl import load_workbook 
-- from tkinter import messagebox
+- openpyxl 
 
 Below we list all the classes in this file.
 #### ArticleRecognitionWindow
@@ -353,12 +352,12 @@ This file will create a window .Users can select a picture file, and it would be
 -  PIL
 -  numpy
 -  pytesseract
--  re
+-  re (regular expression)
 -  tkinter
 
 Below we list all classes we used in this file.
 
-#### Text Picture
+#### TextPicture
 A picture containing text to be recognized.
 ##### Constants:
 - _BNW_THRESHOLD: The constant which will be used to process the picture(see imgArray below). When the number is larger than it, we will detect it as white and set it to be 0. Otherwise, we will detect is as black and set it to be 1. We set it to be 140 here.
@@ -421,7 +420,7 @@ Raise:
             The word we recognize. Type: str
     
     Raise:
-            none
+            None
 - `bindEvent(event)`:
 
     When the event is occured, we will return the word on the position (event.x, event.y)
@@ -433,13 +432,56 @@ Raise:
             recognizeWord(event.x, event.y)
     
     Raise:
-            none
+            None
 #### ImgRecognitionWindow
      
 A singleton class. Defines the window showing the image. The user clicks
     on words they want to look up and it will be shown in the wordlist on the
-    right.
+    right. More, it is inherited from `TextPicture`
+##### Class Methods
+- `__init__(self)`
 
+    It will create two windows.
+    
+    `_picwindow` will show the picture users choose ( We will let users choose the file they want first ). And users can click the word on it.
+    
+    `_wordWindow` will show the word users click. And then let the users choose which words they want to make the vocabulary cards.
+  ```
+   Args:
+            None
+    
+    Return:
+            None
+            
+    Raise:
+            None
+- `_quitwindow()`
+
+    Destroy / Quit the windows after users used it.
+```
+    Args:
+            None
+            
+    Return:
+            None
+            
+    Raise:
+            None
+```
+- `bindEvent(event)`
+    
+    When the event occured, We will detect the word users click and add it to the `_wordWindow`
+
+```
+    Args:
+            None
+            
+    Return:
+            None
+            
+    Raise:
+            None
+```
 ### `main.py`
 
 ### `wordlist_cls.py`

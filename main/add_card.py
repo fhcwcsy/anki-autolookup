@@ -1,5 +1,7 @@
+"""
+
+"""
 # Copied from https://foosoft.net/projects/anki-connect/
-# Please download the add-on "Allows empty first field" by the code: 49741504
 import json
 import urllib.request
 from collections import namedtuple
@@ -64,13 +66,7 @@ def add_note(wordinfo):
             for exs in ex:
                 examples[i].append(exs)    
         i += 1
-    #pos_len = len(pos)
-    #pronunciation_len = len(pronunciation)
-    #definitions_len = len(definition)
-    #example_kind_len = len(example)
-    #example_number = []
-    #for i in range(example_kind_len):
-        #example_number.append(len(example[i]))
+    
     fields = {"word":word}
     for i in range(5):
         field = "pos" + str(i)
@@ -134,10 +130,5 @@ if __name__ == "__main__":
 
     r = Request('deckNames')
     print(r.response)
-    
     print("done")
     
-
-#entries格式：
-#[entry(word='', pos='', pronunciation='', definitions=['', '', ''], examples=[[], [], []]), entry(...)]
-
