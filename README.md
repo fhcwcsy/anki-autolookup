@@ -97,7 +97,7 @@ Below we list the class and functions in this file.
 A class to connect with anki API. This class is mainly copied from the 
 [anki-connect website](https://foosoft.net/projects/anki-connect/).
     
-##### Attribute:
+##### Attributes:
 - `_action`: A string, the action users want to do with anki API.
 - `_request`: A dictionary, the request to anki API.
 - `_response`: A dictionary, the response returned by anki API, associated with 
@@ -131,12 +131,12 @@ put the response in the attribute `_response`.
     Raises:
         Raise Exception ("response has an unexpected number of fields") if 
         the anki-connect system returned an invalid response.
-		Raise Exception ("response is missing required error field") if the 
-		anki-connect system didn't returned error field.
-		Raise Exception ("response is missing required result field") if the 
-		anki-connect system didn't returned result field.
-		Rasie Exception (self._response) if there exists errors in the 
-		returned response.
+        Raise Exception ("response is missing required error field") if the 
+        anki-connect system didn't returned error field.
+        Raise Exception ("response is missing required result field") if the 
+        anki-connect system didn't returned result field.
+        Rasie Exception (self._response) if there exists errors in the 
+        returned response.
  
 #### `add_note(wordinfo)`
 
@@ -172,7 +172,7 @@ If not, create one using class `Request` and action `createModel`.
     Raises:
         None 
  
-- `_new_deck_name`
+#### `_new_deck_name`
 
 Update `deckName`. If `name` is an empty string as default, return None.
 
@@ -694,13 +694,13 @@ selected the deck. If yes, open `ImgRecognitionWindow`. Otherwise, show
 a message box to remind the user.
 
 	Args:
-		None
+        None
 
 	Return:
-		None
+        None
 
 	Raise:
-		None 
+        None 
 
 - `_wordlookup()`
 
@@ -709,13 +709,13 @@ selected the deck. If yes, open `WordLookupWindow`. Otherwise, show
 a message box to remind the user.
 
 	Args:
-		None
+        None
 
 	Return:
-		None
+        None
 
 	Raise:
-		None  
+        None  
 
 - `_articlelookup()`
 
@@ -724,13 +724,13 @@ selected the deck. If yes, open `ArticleRecognitionWindow`. Otherwise,
 show a message box to remind the user.
 
 	Args:
-		None
+        None
 
 	Return:
-		None
+        None
 
 	Raise:
-		None
+        None
 
 - `_getDecks()`
 
@@ -738,13 +738,13 @@ Called by the method `_updateDeckNames`. This method use the API to get
 the deck names in the user's anki.
 
 	Args:
-		None
+        None
 
 	Return:
-		A list contains all the deck names in the user's anki. 
+        A list contains all the deck names in the user's anki. 
 
 	Raise:
-		None    
+        None    
 
 - `_updateDeckNames()`
 
@@ -922,7 +922,8 @@ One is `_inputWindow`, which shows a text box for users to key in words.
 The other is `_wordlistWindow`, which shows the words the users just 
 keyed in.
 
-##### Attribute:
+##### Attributes:
+
 No public attribute.   
 
 ##### Class Methods:
@@ -947,7 +948,7 @@ put it in the wordlist window.
         
     Args:
         event: The action users did. We bind the "Enter" button to this 
-		function, so there is no need to fill this argument.
+        function, so there is no need to fill this argument.
         
     Return:
         None
