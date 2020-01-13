@@ -22,7 +22,7 @@ deckName = None
     Entry: The same as Entry in `crawler.py`.
     my_model: The model name we want to create in anki. This name can not be 
     the same as the default ones, such as "Basic", "Basic(and reversed card)", 
-    and "Close".
+    and "Cloze".
     deckName: Used to stored the list of user's deck names.
 """
 class Request:
@@ -100,7 +100,8 @@ def add_note(wordinfo):
     deckname, "my_model" as modelname, "fields" as field.
     "deckname" is indicated by users. "my_model" is created by the function 
     `create_model`. "fields" is made by the information got by `crawler.py`.
-    This function rearrange the information got by `crawler` to fit the model.
+    This function rearrange the information got by `crawler` to fit the model, 
+    then create a new card in anki.
 
     Args:
         wordinfo: A list of Entry objects obtained by the crawler. The format is 
@@ -194,7 +195,7 @@ def create_model():
 
 def _new_deck_name(name):
     """
-    Update "deckName". If name is an empty string as default, return None.
+    Update "deckName". If "name" is an empty string as default, return None.
 
     Args:
         name: A list, the deck names in the user's anki.

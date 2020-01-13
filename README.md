@@ -80,6 +80,113 @@ to understand the program. They are only listed because we are asked to do so.**
 
 ### `add_card.py`
 
+This file defines a Request class and three functions (`add_note`, 
+`create_model`, `new_deck_name`), to connect to anki API and convert the 
+information obtained by `crawler.py` to cards in anki.
+
+The required modules are:
+
+- json
+- urllib.request
+- collections (namedtuple)
+
+Below we list the class and functions in this file.
+
+#### Request
+
+A class to connect with anki API. This class is mainly copied from the 
+[anki-connect website](https://foosoft.net/projects/anki-connect/).
+    
+##### Attribute:
+- `_action`: A string, the action users want to do with anki API.
+- `_request`: A dictionary, the request to anki API.
+- `_response`: A dictionary, the response returned by anki API, associated with 
+the request. Contains "result" and "error".
+- `_result`: The result part of `_response`. 
+
+##### Class Methods
+- `__init__(self)`
+
+	Args:
+        action: The action users want to do with anki API.
+        params: The other necessary information associated with the action.
+
+    Returns:
+        None
+        
+    Raises:
+        None 
+
+- `_invoke(self)`
+
+This method connect with anki API and check if there is any mistake. If not, 
+put the response in the attribute `_response`.
+        
+	Args:
+        None
+
+    Returns:
+        None
+        
+    Raises:
+        Raise Exception ("response has an unexpected number of fields") if 
+        the anki-connect system returned an invalid response.
+		Raise Exception ("response is missing required error field") if the 
+		anki-connect system didn't returned error field.
+		Raise Exception ("response is missing required result field") if the 
+		anki-connect system didn't returned result field.
+		Rasie Exception (self._response) if there exists errors in the 
+		returned response.
+ 
+#### `add_note(wordinfo)`
+
+This function calls `Request`, using `addnote` as action, `deckName` as 
+deckname, `my_model` as modelname, `fields` as field.
+`deckname` is indicated by users. `my_model` is created by the function 
+`create_model`. `fields` is made by the information got by `crawler.py`.
+This function rearrange the information got by `crawler.py` to fit the model, 
+then create a new card in anki.
+
+    Args:
+        wordinfo: A list of Entry objects obtained by the crawler. The format is 
+        demonstrated in `crawler.py`.
+
+    Returns:
+        None
+
+    Raises:
+        None
+
+#### `create_model()`
+
+This function creates a card model using html. Using class `Request` and 
+action `modelName` to check if `my_model` is one of the user's deck name. 
+If not, create one using class `Request` and action `createModel`.
+
+    Args:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        None 
+ 
+- `_new_deck_name`
+
+Update `deckName`. If `name` is an empty string as default, return None.
+
+    Args:
+        name: A list, the deck names in the user's anki.
+
+    Returns:
+        If name is '' (default), return None.
+        If name is a list, return True.
+
+    Raises:
+        None
+
+
 ### `article_lookup.py`
 
 This program will create a lookup window where the user can enter/paste an article 
@@ -119,7 +226,7 @@ will be looked up.
 
 ##### Class Methods
 
-- `__init__(self)`
+- `__init__()`
 
 Create two windows. 
 
@@ -544,6 +651,135 @@ When the event occured, We will detect the word users click and add it to the
 
 ### `main.py`
 
+This file create a menu window for you to select what deck you want to add card 
+in and what lookup function you want to use. It contains an option menu to 
+select the deck, a button to refresh the decks, and three buttons to select the 
+functions. The required modules are:
+
+- tkinter
+- messagebox (tkinter)
+- filedialog (tkinter)
+- abspath (os.path)
+- dirname (os.path)
+- chdir (os)
+
+Below we list the class defined in this file.
+
+#### lookupGUI
+
+A class to create a menu window. It contains 4 buttons and an option menu.
+
+`refreshButton` is bound with the function `_refreshDecks`. When users 
+click on it, the function will update the connection with anki and refresh 
+the decks listed in the option menu.
+
+`word_lookup_button`, `article_lookup_button`, `image_lookup_button` are  
+bound with the methods `_wordlookup`, `_articlelookup`, `_imagelookup`, 
+respectively. The methods use the modules to create new windows.
+
+`_decksmenu` is an option menu which lists all the decks of the user's anki. 
+The users can select one of it to add new cards in. If the program can not 
+connect with the user's anki, this menu will show nothing.
+
+##### Attributes:
+
+No public attributes. 
+
+##### Class Methods:
+
+- `_imagelookup()`
+
+When the user click on `image_lookup_button`, check if the user has 
+selected the deck. If yes, open `ImgRecognitionWindow`. Otherwise, show 
+a message box to remind the user.
+
+	Args:
+		None
+
+	Return:
+		None
+
+	Raise:
+		None 
+
+- `_wordlookup()`
+
+When the user click on `word_lookup_button`, check if the user has 
+selected the deck. If yes, open `WordLookupWindow`. Otherwise, show 
+a message box to remind the user.
+
+	Args:
+		None
+
+	Return:
+		None
+
+	Raise:
+		None  
+
+- `_articlelookup()`
+
+When the user click on `article_lookup_button`, check if the user has 
+selected the deck. If yes, open `ArticleRecognitionWindow`. Otherwise, 
+show a message box to remind the user.
+
+	Args:
+		None
+
+	Return:
+		None
+
+	Raise:
+		None
+
+- `_getDecks()`
+
+Called by the method `_updateDeckNames`. This method use the API to get 
+the deck names in the user's anki.
+
+	Args:
+		None
+
+	Return:
+		A list contains all the deck names in the user's anki. 
+
+	Raise:
+		None    
+
+- `_updateDeckNames()`
+
+Called by the method `_refreshDecks`. this method changes the list got 
+from `_getDecks` into tuple and put them in the attribute `_decknames`. 
+If the program can not connect with the user's anki, it will show a 
+warning caption.
+        
+    Args:
+        None
+
+    Return:
+        None
+
+    Raise:
+        Raise Exception('Failed to connect with API. Please check that you 
+        have all the prerequisite installed then click"refresh".') if the 
+        program can not connect with the anki API.  
+
+- `_refreshDecks()`
+
+When the user click on `refreshButton`, reconnect to the user's anki 
+and update the names of the deck in it. Also, refresh the options in the 
+option menu.
+        
+    Args:
+        None
+
+    Return:
+        None
+ 
+     Raise:
+        None  
+
+
 ### `wordlist_cls.py`
 
 This file defines the WordlistWindow class, which is the window with all the
@@ -667,6 +903,60 @@ Update scroll region of the scrollbar.
  
 
 ### `word_lookup.py`
+
+This file creates a lookup window that you can key in the words you want to 
+search. Whenever you press "Enter", it will catch the word you just keyed in. 
+Then you can choose what words you want to make the vocabulary cards in anki. 
+The required module is:
+
+- tkinter
+
+Below we list the class defined in this file.
+
+#### WordLookupWindow
+
+Create two windows.
+
+One is `_inputWindow`, which shows a text box for users to key in words.
+
+The other is `_wordlistWindow`, which shows the words the users just 
+keyed in.
+
+##### Attribute:
+No public attribute.   
+
+##### Class Methods:
+
+- `_quitWindow()`
+
+Destroy/quit the windows after users click "Done".
+        
+    Args:
+        None
+
+    Return:
+        None
+
+    Raise:
+        None 
+
+- `_fireOnEnter(event)`
+
+When the users press "Enter", catch the last word the users just keyedin and 
+put it in the wordlist window.
+        
+    Args:
+        event: The action users did. We bind the "Enter" button to this 
+		function, so there is no need to fill this argument.
+        
+    Return:
+        None
+
+    Raise:
+        None  
+
+
+
 
 ## Collaborators
 

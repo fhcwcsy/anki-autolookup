@@ -23,7 +23,7 @@ from os import chdir
 
 class lookupGUI:
     """
-    A class to create a menu window. It contains 4 buttons an option menu.
+    A class to create a menu window. It contains 4 buttons and an option menu.
 
     `refreshButton` is bound with the function `_refreshDecks`. When users 
     click on it, the function will update the connection with anki and refresh 
@@ -31,7 +31,7 @@ class lookupGUI:
 
     `word_lookup_button`, `article_lookup_button`, `image_lookup_button` are  
     bound with the methods `_wordlookup`, `_articlelookup`, `_imagelookup`, 
-    respectively. The mothods use the modules to create new windows.
+    respectively. The methods use the modules to create new windows.
 
     `_decksmenu` is an option menu which lists all the decks of the user's anki. 
     The users can select one of it to add new cards in. If the program can not 
@@ -89,13 +89,13 @@ class lookupGUI:
         a message box to remind the user.
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                None 
+            None 
         """
         if add_card._new_deck_name(self._targetDeck.get()) == None:
             messagebox.showerror("Error", "Please select the deck you want to add cards to.")
@@ -113,15 +113,15 @@ class lookupGUI:
         a message box to remind the user.
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                None
+            None
         """  
-        if add_card.new_deck_name(self._targetDeck.get()) == None:
+        if add_card._new_deck_name(self._targetDeck.get()) == None:
             messagebox.showerror("Error", "Please select the deck you want to add cards to.")
             return
         self._master.withdraw() 
@@ -137,15 +137,15 @@ class lookupGUI:
         show a message box to remind the user.
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                None 
+            None 
         """
-        if add_card.new_deck_name(self._targetDeck.get()) == None:
+        if add_card._new_deck_name(self._targetDeck.get()) == None:
             messagebox.showerror("Error", "Please select the deck you want to add cards to.")
             return  
         self._master.withdraw() 
@@ -159,13 +159,13 @@ class lookupGUI:
         the deck names in the user's anki.
         
         Args:
-                None
+            None
 
         Return:
-               A list contains all the deck names in the user's anki. 
+            A list contains all the deck names in the user's anki. 
 
         Raise:
-                None 
+            None 
         """
         r = add_card.Request('deckNames')
         return r._response['result']
@@ -178,15 +178,15 @@ class lookupGUI:
         warning caption.
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                Raise Exception('Failed to connect with API. Please check that 
-                you have all the prerequisite installed then click"refresh".') 
-                if the program can not connect with the anki API.
+            Raise Exception('Failed to connect with API. Please check that you 
+            have all the prerequisite installed then click"refresh".') if the 
+            program can not connect with the anki API.
         """
         try:
             dn = self._getDecks()
@@ -205,13 +205,13 @@ class lookupGUI:
         option menu.
         
         Args:
-                None
+            None
 
         Return:
-                None
+            None
 
         Raise:
-                None 
+            None 
         """
         self._targetDeck.set('')
         self._updateDeckNames()

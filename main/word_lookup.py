@@ -1,8 +1,8 @@
 """
-This file creates a lookup window that users can key in the word you want to 
+This file creates a lookup window that you can key in the words you want to 
 search. Whenever you press "Enter", it will catch the word you just keyed in. 
 Then you can choose what words you want to make the vocabulary cards in anki. 
-The required modules are:
+The required module is:
 
 - tkinter
 """
