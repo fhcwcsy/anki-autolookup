@@ -87,18 +87,17 @@ and choose the difficulty of words he wants to be looked up. The program will
 find the words in the article that match the requirements and list in the wordlist
 window on his right. Then, user can choose the words he want to add to anki.
 
-The _difficulty_ of a word is defined as follows: We use a wordlist from  
-[NGSL](http://www.newgeneralservicelist.org/), which contains the words used
-in fictions, journals, TV subtitles, etc., and their times of being used. Hence,
-the difficulties of a word is defined by the frequency of being used. If a word
-is more oftenly used, it is considered to be less difficult, and vice versa. If
-a word is not in the list, it is considered to be too difficult ore rarely used
-for a foreign English learner to learn. The frequency used in this program is
-normalized by dividing the actual count of usage by the number of times used of
-the most frequently used word (so the frequency is between 0 and 1). This 
-program reads the text paste in the textbox, determine the difficulty of each 
-word by looking up in the local wordlist, then lookup each word in the Cambridge
-dictionary. 
+The _difficulty_ of a word is defined as follows: We use a wordlist from [NGSL](http://www.newgeneralservicelist.org/),
+which contains the words used in fictions, journals, TV subtitles, etc., and
+their times of being used. Hence, the difficulties of a word is defined by the
+frequency of being used. If a word is more oftenly used, it is considered to be
+less difficult, and vice versa. If a word is not in the list, it is considered 
+to be too difficult ore rarely used for a foreign English learner to learn. The
+frequency used in this program is normalized by dividing the actual count of
+usage by the number of times used of the most frequently used word (so the
+frequency is between 0 and 1). This program reads the text paste in the textbox,
+determine the difficulty of each word by looking up in the local wordlist, then
+lookup each word in the Cambridge dictionary. 
 
 The required modules are:
 
