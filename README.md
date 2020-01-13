@@ -3,6 +3,22 @@
 This is a final project from a programming course. It may not be maintained, but
 feel free to contact us if you want to contribute or maintain this project. 
 
+## Table of Contents
+
+- [Anki Autolookup](#anki-autolookup)
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [Demonstration](#demonstration)
+  * [File Description](#file-description)
+    + [`add_card.py`](#-add-cardpy-)
+    + [`article_lookup.py`](#-article-lookuppy-)
+    + [`cralwer.py`](#-cralwerpy-)
+    + [`imgrecog.py`](#-imgrecogpy-)
+    + [`main.py`](#-mainpy-)
+    + [`wordlist_cls.py`](#-wordlist-clspy-)
+    + [`word_lookup.py`](#-word-lookuppy-)
+  * [Collaborators](#collaborators) 
+
 ## Installation
 
 **This program is only tested on Ubuntu 19.04 and Ubuntu 19.10**. To use it you need
@@ -65,124 +81,154 @@ to understand the program. They are only listed because we are asked to do so.**
 ### `add_card.py`
 
 ### `article_lookup.py`
-This program will create a lookup window where you can enter an article and choose the difficulty of words you want. The program will find the difficult words of the article. Then, users can choose which difficult words they want to make the vocabulary cards in anki. The required modules are:
 
-- tkinter
-- re (regular expression)
-- wordlist_cls: This module is created by us.
-- openpyxl 
+This program will create a lookup window where the user can enter/paste an article 
+and choose the difficulty of words he wants to be looked up. The program will 
+find the words in the article that match the requirements and list in the wordlist
+window on his right. Then, user can choose the words he want to add to anki.
+
+The _difficulty_ of a word is defined as follows: We use a wordlist from  
+[NGSL](http://www.newgeneralservicelist.org/), which contains the words used
+in fictions, journals, TV subtitles, etc., and their times of being used. Hence,
+the difficulties of a word is defined by the frequency of being used. If a word
+is more oftenly used, it is considered to be less difficult, and vice versa. If
+a word is not in the list, it is considered to be too difficult ore rarely used
+for a foreign English learner to learn. The frequency used in this program is
+normalized by dividing the actual count of usage by the number of times used of
+the most frequently used word (so the frequency is between 0 and 1). This 
+program reads the text paste in the textbox, determine the difficulty of each 
+word by looking up in the local wordlist, then lookup each word in the Cambridge
+dictionary. 
+
+The required modules are:
+
+- `tkinter`
+- `re` (regular expression)
+- `openpyxl` 
 
 Below we list all the classes in this file.
+
 #### ArticleRecognitionWindow
-This is the reactive window mentioned above.
-##### Basic Idea of Finding Difficult Words
-Look up difficult words from a text. A local wordlist from  'http://www.newgeneralservicelist.org/ is used, which contains the top words used in American TV subtitles and other sources, and their frequency of being used. This wordlist is used to define the difficulty of a word. The frequency used in this program is normalized by dividing the real frequency by the max frequency. This program reads a text file containing some English words, determine its difficulty by looking up in the local wordlist.
+
+This is the main window of the feature.
+
 ##### Attributes
 
-Here we list the important one only, others is not important.
+- difficulty: The (normalized) maximum difficulty of the word to be looked up. 
+The lower this value is, the less word (keeping only the most difficult ones)
+will be looked up.
 
-- difficulty: The difficulty of the words we want to find. The less the more difficult the word is. ( It is actually the normalized frequency we would mention later )
 ##### Class Methods
-- `__init__(self)`
 
-    Create two windows. 
+- `ArticleRecognitionWindow.__init__(self)`
 
-    One is `_inputWindow` where the users enter the article and determine the difficulty of words they want.
+Create two windows. 
+
+One is `_inputWindow` where the users enter the article and determine the 
+difficulty of words they want to be looked up.
     
-    The other is `_wordwindow` where we show the the difficult words we find in the article. Users can select which words they want to make vocabulary cards here.
-    ```
+The other is `_wordwindow` where we show the the difficult words we find in the article. Users can select which words they want to make vocabulary cards here.
+
     Args:
-            None
+		None
     
     Return:
-            None
+		None
             
     Raise:
-            None
+		None
+
+- `ArticleRecognitionWindow.lookup()`
+
+This function will first get the difficulty users set. Use it to find the 
+difficult words in the article, and add it to the `_wordwindow`.
+
+    Args:
+		None
+    
+    Return:
+		None
+    
+    Raise:
+		raise Exception('InvalidDifficulty') if self.difficulty is not 
+			between 0 and 1.
+
 - `_quitwindow()`
 
-    Destroy / Quit the windows after users used it.
-```
+Destroy / Quit the windows after using it.
+
     Args:
-            None
+		None
             
     Return:
-            None
+		None
             
     Raise:
-            None
-```
-- `getWordlist()`
+		None
 
-    Read the excel sheet ( This is the reference what we mentioned in Basic Idea ) and convert it into a dictinary containing the words and its frequency/max_frequency.
-```
-Args:
+- `ArticleRecognitionWindow._getWordlist()`
+
+Read the excel sheet (the local dictionary with frequencies of the words)
+and convert it into a dictinary with the key being the words and and 
+the value being its `frequency/max_frequency`.
+ 
+
+	Args:
         None
 
-Return: 
+	Return: 
         A dictionary
 
-Raise:
+	Raise:
         None
-```
-- `getArticle(text)`
 
-    Read the text , cut it into words, then add them into a set.
-```
+- `ArticleRecognitionWindow._getArticle(text)`
+
+Read the text, cut it into words, then add them into a set and return.
+
     Args:
-            text: The article we want to anaylze.
+		text: The article we want to anaylze.
             
     Return: 
-            A set
+		A set containing the words.
     
     Raise:
-            None
-```
-- `dictLookup(word, d)`
+		None
 
-    Local wordlist lookup. Check if the word is in the wordlist and get its frequency. Also check the stripped words if the word matches any common suffixes.
-```
+- `ArticleRecognitionWindow._dictLookup(word, d)`
+
+Local wordlist lookup. Check if the word is in the wordlist and get its 
+frequency. Also check the stripped words if the word matches any common suffixes.
+
     Args:
-            word: the word to look up
-            d: The dictionary to look up
+		word: the word to look up
+		d: The dictionary to look up
     
     Return: 
-            If any result is found, then return a tuple of (word, frequency).
-            If the word (or any of the stripped version) is not in the list, then return None.
-            
-    Raise:
-            None
-```
-- `setLookup(s, dictionary)`
+		If any result is found, then return a tuple of (word, frequency).
+		If the word (or any of the stripped version) is not in the list, then 
+		return None.
 
-    Look up each word in the set in the local wordlist. If the word is found and its frequency is below the self.difficulty, then recognize it as difficult word. 
-```
+    Raise:
+		None
+
+- `ArticleRecognitionWindow._setLookup(s, dictionary)`
+
+Look up each word in the set in the local wordlist. If the word is found and its
+frequency is below the self.difficulty, then recognize it as difficult word. 
+Stopwords are removed.
+
     Args:
-            s: a set containing the words to be looked up.
-            dictionary: the dictionary with the key be the words and the value be its frequency.
-            
+		s: a set containing the words to be looked up.
+		dictionary: the dictionary with the key be the words and the value be 
+		its frequency.
+		
     Return: 
-            A list containing tuples of (difficult_words, definition)
+		a list containing the difficult words found in the local wordlist.
 
     Raise:
-            None
-```
-- `_lookup()`
+		None
 
-    This function will first get the difficulty users set. Use it to find the difficult words in the article, and add it to the `_wordwindow`.
-```
-    Args:
-            None
-    
-    Return:
-            None
-    
-    Raise:
-            if not (0 <= self.difficulty <= 1):
-                raise Exception('InvalidDifficulty')
-
-            
-```
 ### `cralwer.py`
 
 This file defines a namedtuple Entry to represent a dictionary entry, and a
@@ -619,4 +665,4 @@ recognition feature (`imgrecog`), article lookup GUI design (`article_lookup.py`
 
 - 王昊謙 ([fhcwcsy](https://github.com/fhcwcsy)): Wordlist window GUI design 
 (`wordlist_cls`), crawler (`crawler.py`), speed enhancement in image recognition,
-final modification in all files.
+article lookup feature (my hw2), final modification in all files.

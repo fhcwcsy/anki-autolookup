@@ -1,15 +1,30 @@
 """
-This program will create a lookup window where you can enter an article and
-choose the difficulty of words you want. The program will find the difficult
-words of the article. Then, users can choose which difficult words they want
-to make the vocabulary cards in anki. The required modules are:
+This program will create a lookup window where the user can enter/paste an article 
+and choose the difficulty of words he wants to be looked up. The program will 
+find the words in the article that match the requirements and list in the wordlist
+window on his right. Then, user can choose the words he want to add to anki.
+
+The _difficulty_ of a word is defined as follows: We use a wordlist from  
+[NGSL](http://www.newgeneralservicelist.org/), which contains the words used
+in fictions, journals, TV subtitles, etc., and their times of being used. Hence,
+the difficulties of a word is defined by the frequency of being used. If a word
+is more oftenly used, it is considered to be less difficult, and vice versa. If
+a word is not in the list, it is considered to be too difficult ore rarely used
+for a foreign English learner to learn. The frequency used in this program is
+normalized by dividing the actual count of usage by the number of times used of
+the most frequently used word (so the frequency is between 0 and 1). This 
+program reads the text paste in the textbox, determine the difficulty of each 
+word by looking up in the local wordlist, then lookup each word in the Cambridge
+dictionary. 
+
+The required modules are:
 
 - tkinter
-- re
+- re (regular expression)
+- openpyxl 
 - wordlist_cls: This module is created by us.
-- from openpyxl import load_workbook 
-- from tkinter import messagebox
 """
+
 import tkinter as tk
 from tkinter import messagebox
 from openpyxl import load_workbook
@@ -19,25 +34,20 @@ import wordlist_cls
 
 class ArticleRecognitionWindow:
     """
-    This is the reactive window mentioned above.
+    The class controlling the article lookup feature.
+
+    Attributes:
+        difficulty: The (normalized) maximum difficulty of the word to be looked
+            up. The lower this value is, the less word (keeping only the most
+            difficult ones) will be looked up.
     """
 
-    """
-    Basic Idea of Finding Difficult Words:
-    Look up difficult words from a text. A local wordlist from  
-    'http://www.newgeneralservicelist.org/ is used, which contains the top words
-    used in American TV subtitles and other sources, and their frequency of being
-    used. This wordlist is used to define the difficulty of a word. The frequency
-    used in this program is normalized by dividing the real frequency by the max
-    frequency. This program reads a text file containing some English words,
-    determine its difficulty by looking up in the local wordlist.
-    """
     def __init__(self):
         """
         Create two windows. 
 
         One is `_inputWindow` where the users enter the article and determine
-        the difficulty of words they want.
+        the difficulty of words they want to be looked up.
     
         The other is `_wordwindow` where we show the the difficult words we
         find in the article. Users can select which words they want to make
@@ -48,11 +58,6 @@ class ArticleRecognitionWindow:
         self._inputWindow.title('Article Lookup')
         self._inputWindow.geometry('800x600+20+20')
         self.difficulty = 4e-5
-        """
-        The difficulty of the words we want to find. The less the more difficult
-        the word is. (It is actually the normalized frequency we would mention
-        later)
-        """
 
         # self._inputWindow.configure(background='black')
         # text_lookup_frame = tk.Frame(self._inputWindow)
@@ -73,7 +78,7 @@ class ArticleRecognitionWindow:
             '1=lookup every word, 1e-6=lookup only the most difficult words.')
         difficultyHint.grid(column=1, row=2, columnspan=2, pady=(0, 15))
         self._lookupButton = tk.Button(self._inputWindow, text='Lookup!'
-                , command=self._lookup)
+                , command=self.lookup)
         self._lookupButton.pack()
         self.outputbox = tk.Text(self._inputWindow, width=110,
                                  height=45)
@@ -82,23 +87,23 @@ class ArticleRecognitionWindow:
 
         self._wordwindow.title('Words to be added')
         self.wlist = wordlist_cls.WordlistWindow(self._wordwindow,
-                self._quitWindow, bg='#444444')
+                self.quitWindow, bg='#444444')
         self.wlist.pack(expand='true', fill='both')
 
         self._inputWindow.mainloop()
 
-    def _quitWindow(self):
+    def quitWindow(self):
         """
-        Destroy / Quit the windows after users used it.
+        Destroy/quit the windows after using it.
 
         Args:
-                None
+            None
             
         Return:
-                None
+            None
             
         Raise:
-                None
+            None
         """
         self._inputWindow.destroy()
         self._inputWindow.update()
@@ -107,20 +112,20 @@ class ArticleRecognitionWindow:
         self._wordwindow.destroy()
         self._wordwindow.quit()
 
-    def _lookup(self):
+    def lookup(self):
         """
         This function will first get the difficulty users set. Use it to find
         the difficult words in the article, and add it to the `_wordwindow`.
 
         Args:
-                None
+            None
     
         Return:
-                None
+            None
     
         Raise:
-                if not (0 <= self.difficulty <= 1):
-                    raise Exception('InvalidDifficulty')
+            raise Exception('InvalidDifficulty') if self.difficulty is not 
+                between 0 and 1.
         """
         try:
             self.difficulty = float(self._difficultyStr.get())
@@ -132,18 +137,18 @@ class ArticleRecognitionWindow:
             return
             # raise e
         text = self.outputbox.get('1.0', 'end')
-        worddic = self.getWordlist()
-        wordset = self.getArticle(text)
+        worddic = self._getWordlist()
+        wordset = self._getArticle(text)
         # print(wordset)
-        wordlist = self.setLookup(wordset, worddic)
+        wordlist = self._setLookup(wordset, worddic)
         for word in wordlist:
             self.wlist.newWord(word)
 
-    def getWordlist(self):
+    def _getWordlist(self):
         """
-         Read the excel sheet ( This is the reference what we mentioned in
-         Basic Idea ) and convert it into a dictinary containing the words and
-         its frequency/max_frequency.
+        Read the excel sheet (the local dictionary with frequencies of the words)
+        and convert it into a dictinary with the key being the words and and 
+        the value being its frequency/max_frequency.
 
         Args:
                 None
@@ -163,41 +168,41 @@ class ArticleRecognitionWindow:
                     ws['B{}'.format(i)].value / freq_max )
         return wordlist
 
-    def getArticle(self, text):
+    def _getArticle(self, text):
         """
-         Read the text , cut it into words, then add them into a set.
+        Read the text, cut it into words, then add them into a set then return.
 
         Args:
-                text: The article we want to anaylze.
+            text: The article we want to anaylze.
             
         Return: 
-                A set
+            A set containing the words.
     
         Raise:
-                None
+            None
         """
         words = set()
         splitchars = '[\s+,."]'
         words.update(re.split(splitchars, text.lower()))
         return words
 
-    def dictLookup(self, word, d):
+    def _dictLookup(self, word, d):
         """
-         Local wordlist lookup. Check if the word is in the wordlist and get 
-         its frequency. Also check the stripped words if the word matches any
-         common suffixes.
+        Local wordlist lookup. Check if the word is in the wordlist and get 
+        its frequency. Also check the stripped words if the word matches any
+        common suffixes.
     
         Args:
-                word: the word to look up
-                d: The dictionary to look up
+            word: the word to look up
+            d: The dictionary to look up
     
         Return: 
-                If any result is found, then return a tuple of (word, frequency).
-                If the word (or any of the stripped version) is not in the
-                list, then return None.
+            If any result is found, then return a tuple of (word, frequency).
+            If the word (or any of the stripped version) is not in the
+            list, then return None.
             
         Raise:
-                None
+            None
         """
         # print(d)
         w = word
@@ -231,17 +236,21 @@ class ArticleRecognitionWindow:
             w = word
         return None
 
-    def setLookup(self, s, dictionary):
+    def _setLookup(self, s, dictionary):
         """Look up each word in the set in the local wordlist.
         
         If the word is found and its frequency is below the self.difficulty,
         then recognize it as difficult word. Stopwords are removed.
 
-        Arguments:
+        Args:
             s: a set containing the words to be looked up.
             dictionary: the dictionary with the key be the words and the value
                 be its frequency.
-            return: a list containing tuples of (difficult_words, definition)
+        return:
+            a list containing the difficult words found in the local wordlist.
+        
+        Raise:
+            None
         """
 
         stopWords = [
@@ -262,7 +271,7 @@ class ArticleRecognitionWindow:
                 s.remove(be)
         # print(s)
         for word in s:
-            lookupResult = self.dictLookup(word, dictionary)
+            lookupResult = self._dictLookup(word, dictionary)
             if lookupResult == None:
                 continue
             # print(lookupResult[1], self.difficulty)
@@ -273,4 +282,4 @@ class ArticleRecognitionWindow:
 
 if __name__ == '__main__':
     done = ArticleRecognitionWindow() 
-    # worddic = self.getWordlist()
+    # worddic = self._getWordlist()
