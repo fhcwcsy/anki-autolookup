@@ -61,7 +61,7 @@ then use `46741504` and `2055492159` to add the plugins.
 +-- start.sh: bash script to launch the program.
 +-- main: Main scripts of the program.
 |   +-- add_card.py
-|   +-- article_lookup.py
+|   +-- article_lookup.py: Lookup difficult words in an article.
 |   +-- crawler.py: A cralwer to lookup words in Cambridge online dictionary.
 |   +-- dic.xlsx: A spreadsheet with data about word usage in a variety of sources.
 |   +-- imgrecog.py: The script for word lookup from images.
@@ -120,14 +120,15 @@ will be looked up.
 
 ##### Class Methods
 
-- `ArticleRecognitionWindow.__init__(self)`
+- `__init__(self)`
 
 Create two windows. 
 
 One is `_inputWindow` where the users enter the article and determine the 
 difficulty of words they want to be looked up.
     
-The other is `_wordwindow` where we show the the difficult words we find in the article. Users can select which words they want to make vocabulary cards here.
+The other is `_wordwindow` where we show the the difficult words we find in the
+article. Users can select which words they want to make vocabulary cards here.
 
     Args:
 		None
@@ -138,7 +139,7 @@ The other is `_wordwindow` where we show the the difficult words we find in the 
     Raise:
 		None
 
-- `ArticleRecognitionWindow.lookup()`
+- `lookup()`
 
 This function will first get the difficulty users set. Use it to find the 
 difficult words in the article, and add it to the `_wordwindow`.
@@ -155,7 +156,7 @@ difficult words in the article, and add it to the `_wordwindow`.
 
 - `_quitwindow()`
 
-Destroy / Quit the windows after using it.
+Destroy/quit the windows after using it.
 
     Args:
 		None
@@ -166,7 +167,7 @@ Destroy / Quit the windows after using it.
     Raise:
 		None
 
-- `ArticleRecognitionWindow._getWordlist()`
+- `_getWordlist()`
 
 Read the excel sheet (the local dictionary with frequencies of the words)
 and convert it into a dictinary with the key being the words and and 
@@ -182,7 +183,7 @@ the value being its `frequency/max_frequency`.
 	Raise:
         None
 
-- `ArticleRecognitionWindow._getArticle(text)`
+- `_getArticle(text)`
 
 Read the text, cut it into words, then add them into a set and return.
 
@@ -195,7 +196,7 @@ Read the text, cut it into words, then add them into a set and return.
     Raise:
 		None
 
-- `ArticleRecognitionWindow._dictLookup(word, d)`
+- `_dictLookup(word, d)`
 
 Local wordlist lookup. Check if the word is in the wordlist and get its 
 frequency. Also check the stripped words if the word matches any common suffixes.
@@ -212,7 +213,7 @@ frequency. Also check the stripped words if the word matches any common suffixes
     Raise:
 		None
 
-- `ArticleRecognitionWindow._setLookup(s, dictionary)`
+- `_setLookup(s, dictionary)`
 
 Look up each word in the set in the local wordlist. If the word is found and its
 frequency is below the self.difficulty, then recognize it as difficult word. 
@@ -325,7 +326,7 @@ No public attributes.
  
 ##### Class Methods
 
-- `LookupRequest.__init__(word)`
+- `__init__(word)`
 
 Construct a LookupRequest instance with a word. Saves the word as an attribute
 without looking it up. 
@@ -340,7 +341,7 @@ without looking it up.
 		None
  
 
-- `LookupRequest.onlineLookup()`
+- `onlineLookup()`
 
 Packed lookup method. Deals exceptions and British spellings.
 
@@ -359,7 +360,7 @@ was raised, then set `self._entries` to be None.
 		None
  
 
-- `LookupRequest.export() `
+- `export() `
 
 Export the list of entries found.
 
@@ -372,7 +373,7 @@ Export the list of entries found.
 	Raises:
 		None
 
-- `LookupRequest._directOnlineLookup([target=None, replace=None])`
+- `_directOnlineLookup([target=None, replace=None])`
 
 Look up the word and saves a list of Entry objects to `self._entries`.
 
@@ -393,141 +394,155 @@ Entry objects.
 
 ### `imgrecog.py`
 
-This file will create a window .Users can select a picture file, and it would be shown in this window. When users click on the word of it, this program will recognize the word and generate the vocabulary card. The required modules are:
+This file can lookup words from an image. The user select a picture, then it 
+will be shown in a window. When the user click on the word in the picture, this
+program will attempt to recognize the word and generate the vocabulary card. 
+Note that the picture must be very well taken so that the lines are not tilted
+or bent too much. Some examples are provided in `/main/imgexample/`. The required 
+modules are:
 
 -  PIL
 -  numpy
 -  pytesseract
--  re (regular expression)
+-  re
 -  tkinter
 
 Below we list all classes we used in this file.
 
 #### TextPicture
+
 A picture containing text to be recognized.
+
 ##### Constants:
-- _BNW_THRESHOLD: The constant which will be used to process the picture(see imgArray below). When the number is larger than it, we will detect it as white and set it to be 0. Otherwise, we will detect is as black and set it to be 1. We set it to be 140 here.
-- LINE_THRESHOLD: When the black pixels in a raw is less than this constant, we will detect it as a white line. Here we set it to be 3.
-- SPACE_THRESHOLD: When the black pixels in a column is less than it, we detect it as a white column. Here we set it to be 2. 
+- `_BNW_THRESHOLD`
+
+When the gray scale number of a pixel is smaller than this constant, it will
+be recognized as a white pixel and set to 0. Otherwise, it will be
+recognized as a black pixel and set to 1.
+
+- `_LINE_THRESHOLD`
+
+ When the number of black pixels in a raw is less than this number,
+it will be recognized as a white line.
+ 
+- `__SPACE_THRESHOLD`
+
+When the black pixels in a column is less than this constant,
+it will be considered as a white column.
+ 
 ##### Attributes:
-- originalImg: The target picture to be recognized.
-- imgArray: The array of the image, which is processed a little bit to make it more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means white, while 1 means black)  
-- processedImg: The processed image mentioned above.
-- height: The height of the picture.
-- width: The width of the picture.
-- _horizontalSum: The number of black points of each horiaontal raw of the picture.
+
+No public attributes.
+
 ##### Class Methods:
 - `_is_similar(s1,s2)`
 
-    Determine whether s1 and s2 are similar or not.
+Determine whether two words s1 and s2 are similar or not.
 
-    We would compare the length and the characters in them to determine whether they are similar or not.
-```
-Args:
-	s1, s2: two strings to be compared.
-        
-Return:
-        True: if they are similar.
-        False: if they are not.
+We would compare the length and the characters in them to determine whether they are similar or not.
+	Args:
+		s1, s2: two strings to be compared.
+			
+	Return:
+			True: if they are similar.
+			False: if they are not.
 
-Raises:
-	None
-```
+	Raises:
+		None
+
 - `_extractLine(lineUpperBound, lineLowerBound)`
 
-    This method will analyze the interest region which is given by lineUpperBound and lineLowerBound. And this interest region is actually a subset of the imgarray.
+This method will analyze the a region which is defined by
+lineUpperBound and lineLowerBound. This region should contain the line
+to be analyzed.
 
-    We will first sum up vertically to detect the white column. If the number of black pixels in a column is less than SPACE_THRESHOLD, we recognize it as a white column. Find the wider white column to be the divide of two words. And then we return a list of index of divide of words. 
-```
-Args:
-        lineUpperBound: The upper bound of raw of the interest region.
-        lineLowerBound: The lower bound of raw of the interest region.
-        
-Return:
-        wordIndices: a list of index of divide of words.
+We will first sum up vertically to detect the white column. If the
+number of black pixels in a column is less than `_SPACE_THRESHOLD`, we
+recognize it as a white column. Then, we find the wider white column to
+be the space between two words. Everything between two spaces is a word.
+Lastly, we return a list of indices to represent the coordinates of each
+word.
 
-Raise:
-        Exception: raise e
-```
-- `recognizeWord(wordX,wordY):`
+	Args:
+		lineUpperBound: The upper bound of raw of the interest region.
+		lineLowerBound: The lower bound of raw of the interest region.
+	
+	Return:
+		wordIndices: a list of index of divide of words.
 
-    This function is designed to recognize the word on the position(wordX, wordY).
+	Raise:
+		None
+ 
 
-    Here, we will first find the nearst white raws to detect the line which the word belong to. Use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
+- `_bindEvent(event)`:
 
-    Then, we put the image of the line into pytesseract to transform image to English. Use the order of the word in the string to get `targetWordFromLine`. But sometimes the order may be detected wrong. So we chop the image of the word and use pytesseract to get `targetWordFromWord`, which may have lower precision than the word detected in whole line. 
-    
-    Last, we use `_is_similar(s1, s2)` to compare `targetWordFromLine` and `targetWordFromWord`. If they are similar, then return `targetWordFromLine`, which has higher precision. When they are not similar, it implies that the order of the word in line may be detected wrong. Thus, `targetWordFromLine` may be wrong, so we return `targetWordFromWord` instead.
-    ```
+When the event is occured, we will return the word on the position (event.x, event.y)
+
     Args:
-             WordX, WordY: The position of the word we want to recognize.
-    
-    Return:
-            The word we recognize. Type: str
-    
-    Raise:
-            None
-- `bindEvent(event)`:
-
-    When the event is occured, we will return the word on the position (event.x, event.y)
-    ```
-    Args:
-            event: The event that triggers the function recognizeWord.
+		event: The event that triggers the function recognizeWord.
             
     Return:
-            recognizeWord(event.x, event.y)
+		The word recognized at position (event.x, event.y)
     
     Raise:
-            None
+		None
+
 #### ImgRecognitionWindow
-     
-A singleton class. Defines the window showing the image. The user clicks
-    on words they want to look up and it will be shown in the wordlist on the
-    right. More, it is inherited from `TextPicture`
+
+Defines the window showing the image. The user clicks
+on words they want to look up and the word will be listed in the wordlist 
+on the right. This class inherit the class `TextPicture`
+
 ##### Class Methods
+
 - `__init__(self)`
 
-    It will create two windows.
-    
-    `_picwindow` will show the picture users choose ( We will let users choose the file they want first ). And users can click the word on it.
-    
-    `_wordWindow` will show the word users click. And then let the users choose which words they want to make the vocabulary cards.
-  ```
-   Args:
-            None
-    
-    Return:
-            None
-            
-    Raise:
-            None
+This constructor will create two windows.
+
+_picwindow will show the picture the user has chosen (We will let the user 
+choose the file they want to be analyzed). Then, the user can click the
+word and the word will be recognized.
+
+_wordWindow will show the selected words. The user can choose which 
+words they want to make the vocabulary cards.
+
+	Args:
+		None
+
+	Return:
+		None
+		
+	Raise:
+		None
+ 
+
 - `_quitwindow()`
 
-    Destroy / Quit the windows after users used it.
-```
+Destroy/quit the windows.
+
     Args:
-            None
+		None
             
     Return:
-            None
+		None
             
     Raise:
-            None
-```
+		None
+
 - `bindEvent(event)`
     
-    When the event occured, We will detect the word users click and add it to the `_wordWindow`
+When the event occured, We will detect the word users click and add it to the
+`_wordWindow`
 
-```
     Args:
-            None
+		None
             
     Return:
-            None
+		None
             
     Raise:
-            None
-```
+		None
+
 ### `main.py`
 
 ### `wordlist_cls.py`
@@ -575,7 +590,7 @@ checked by default. The user can click on the "done" button to quit and
  
 ##### Class Methods
 
-- `WordlistWindow.__init__(master, quitFunc [, **kwargs])`
+- `__init__(master, quitFunc [, **kwargs])`
 
 Construct a modified tk.Frame object with scrollbar and word checklist.
 
@@ -592,7 +607,7 @@ and word listing feature. Takes all arguments as tk.Frame.
 		None
  
 
-- `WordlistWindow.newWord(word)`
+- `newWord(word)`
 
 Add new words
 
@@ -608,11 +623,11 @@ function to add new word. load the word in to the queue, then the method
 	Raises:
 		None
  
-- `WordlistWindow._updateStatus()`
+- `_updateStatus()`
 
 Update the status label to indicate the queue length.
 
-- `WordlistWindow._lookupThreading()`
+- `_lookupThreading()`
 
 Look up words in `self._queue` in the background.
 
@@ -629,7 +644,7 @@ input words (the speed depends on CPU and GPU).
 	Raises:
 		None
  
-- `WordlistWindow._quitAndAdd()`
+- `_quitAndAdd()`
 
 Add the words checked and quit.
 
@@ -647,7 +662,7 @@ deck, and finally quit the window.
 		None
  
 
-- `WordlistWindow._set_scrollregion([event=None])`
+- `_set_scrollregion([event=None])`
 
 Update scroll region of the scrollbar.
  
