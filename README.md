@@ -11,7 +11,7 @@ feel free to contact us if you want to contribute or maintain this project.
   * [Demonstration](#demonstration)
   * [File Description](#file-description)
     + [`add_card.py`](#add-cardpy)
-    + [`article_lookup.py`](article_lookuppy)
+    + [`article_lookup.py`](https://github.com/fhcwcsy/anki-autolookup/blob/master/README.md#article_lookuppy)
     + [`cralwer.py`](#cralwerpy)
     + [`imgrecog.py`](#imgrecogpy)
     + [`main.py`](#mainpy)
