@@ -10,7 +10,6 @@ functions. The required modules are:
 -abspath (os.path)
 -dirname (os.path)
 -chdir (os)
--word_lookup, article_lookup, add_card (created by us)
 """
 import tkinter as tk
 from tkinter import messagebox
@@ -97,7 +96,7 @@ class lookupGUI:
         Raise:
                 None 
         """
-        if add_card.new_deck_name(self._targetDeck.get()) == None:
+        if add_card._new_deck_name(self._targetDeck.get()) == None:
             messagebox.showerror("Error", "Please select the deck you want to add cards to.")
             return   
         self._master.withdraw() 
@@ -168,7 +167,7 @@ class lookupGUI:
                 None 
         """
         r = add_card.Request('deckNames')
-        return r.response['result']
+        return r._response['result']
 
     def _updateDeckNames(self):
         """
@@ -184,7 +183,9 @@ class lookupGUI:
                 None
 
         Raise:
-                None 
+                Raise Exception('Failed to connect with API. Please check that 
+                you have all the prerequisite installed then click"refresh".') 
+                if the program can not connect with the anki API.
         """
         try:
             dn = self._getDecks()

@@ -5,7 +5,6 @@ Then you can choose what words you want to make the vocabulary cards in anki.
 The required modules are:
 
 - tkinter
-- wordlist_cls: This module is created by us.
 """
 
 import tkinter as tk

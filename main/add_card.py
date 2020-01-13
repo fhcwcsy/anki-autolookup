@@ -1,45 +1,115 @@
 """
-
+    This file defines a Request class and three functions (add_note, 
+    create_model, new_deck_name), to connect to anki API and convert the 
+    information got by `crawler.py` to cards in anki.
+    The required modules are:
+    
+    -json
+    -urllib.request
+    -collections (namedtuple)
 """
-# Copied from https://foosoft.net/projects/anki-connect/
 import json
 import urllib.request
 from collections import namedtuple
 
 Entry = namedtuple('Entry', 
         ['word', 'pos', 'pronunciation', 'definitions', 'examples'])
- 
 my_model = "anki_auto-lookup"
 deckName = None
-
+"""
+    Entry: The same as Entry in `crawler.py`.
+    my_model: The model name we want to create in anki. This name can not be 
+    the same as the default ones, such as "Basic", "Basic(and reversed card)", 
+    and "Close".
+    deckName: Used to stored the list of user's deck names.
+"""
 class Request:
+    """
+    A class to connect with anki API. This class is mainly copied from the 
+    anki-connect website:
+    https://foosoft.net/projects/anki-connect/
+    
+    Attribute:
+        _action: A string, the action users want to do with anki API.
+        _request: A dictionary, the request to anki API.
+        _response: A dictionary, the response returned by anki API, associated with 
+        the request. Contains "result" and "error".
+        _result: The result part of _response.
 
+    """
     def __init__(self, action, **params):
-        self.action = action
-        self.request = {"action": action, "params": params, "version": 6} 
-        self.response = None
-        self.result = None
-        self.invoke()
+        """
+        Args:
+            action: The action users want to do with anki API.
+            params: The other necessary information associated with the action.
 
-    def invoke(self):
-        requestJson = json.dumps(self.request).encode('utf-8')
-        self.response = json.load(urllib.request.urlopen(urllib.request.Request("http://localhost:8765", requestJson)))
-        if len(self.response) != 2:
+        Returns:
+            None
+        
+        Raises:
+            None
+        """ 
+        self._action = action
+        self._request = {"action": action, "params": params, "version": 6} 
+        self._response = None
+        self._result = None
+        self._invoke()
+
+    def _invoke(self):
+        """
+        This method connect with anki API and check if there is any mistake. If 
+        not, put the response in the attribute _response.
+        Args:
+            None
+
+        Returns:
+            None
+        
+        Raises:
+            Raise Exception ("response has an unexpected number of fields") if 
+            the anki-connect system returned an invalid response.
+            Raise Exception ("response is missing required error field") if the 
+            anki-connect system didn't returned error field.
+            Raise Exception ("response is missing required result field") if the 
+            anki-connect system didn't returned result field.
+            Rasie Exception (self._response) if there exists errors in the 
+            returned response.
+        """
+        requestJson = json.dumps(self._request).encode('utf-8')
+        self._response = json.load(urllib.request.urlopen(urllib.request.Request("http://localhost:8765", requestJson)))
+        if len(self._response) != 2:
             raise Exception("response has an unexpected number of fields")
         
-        if "error" not in self.response:
+        if "error" not in self._response:
             raise Exception("response is missing required error field")
 
-        if "result" not in self.response:
+        if "result" not in self._response:
             raise Exception("response is missing required result field")
 
-        if self.response['error'] is not None:
-            raise Exception(self.response['error'])
+        if self._response['error'] is not None:
+            raise Exception(self._response['error'])
 
-        self.result = self.response["result"]
+        self._result = self._response["result"]
 
 
 def add_note(wordinfo):
+    """
+    This function calls `Request`, using "addnote" as action, "deckName" as 
+    deckname, "my_model" as modelname, "fields" as field.
+    "deckname" is indicated by users. "my_model" is created by the function 
+    `create_model`. "fields" is made by the information got by `crawler.py`.
+    This function rearrange the information got by `crawler` to fit the model.
+
+    Args:
+        wordinfo: The Entry (a list) got by the crawler. The format is 
+        demonstrated in `crawler.py`.
+
+    Returns:
+        None
+
+    Raises:
+        None 
+    """
     global my_model
     global deckName
     i = 0
@@ -87,6 +157,19 @@ def add_note(wordinfo):
 
 
 def create_model():
+    """
+    This function creates a card model using html. Using class `Request` and 
+    action "modelName" to check if "my_model" is one of the user's deck name. 
+    If not, create one using class `Request` and action "createModel".
+    Args:
+        None
+
+    Returns:
+        None
+
+    Raises:
+        None 
+    """
     global my_model
     check = Request("modelNames")
     inorderfields = ["word"]
@@ -106,7 +189,20 @@ def create_model():
                 cardTemplates=[{"Front": "<font size='6'><b><center>{{word}}</center></b></font>", "Back":back}])
         
 
-def new_deck_name(name):
+def _new_deck_name(name):
+    """
+    Update "deckName". If name is an empty string as default, return None.
+
+    Args:
+        name: A list, the deck names in the user's anki.
+
+    Returns:
+        If name is '' (default), return None.
+        If name is a list, return True.
+
+    Raises:
+        None 
+    """
     global deckName
     if name == '':
         return None
@@ -118,7 +214,7 @@ def new_deck_name(name):
 if __name__ == "__main__":
 
     # check API version
-    if Request("version").result != 6 :
+    if Request("version")._result != 6 :
         raise Exception("API version is not 6")
     
         #print(new_request.result)
@@ -129,6 +225,6 @@ if __name__ == "__main__":
     # add_note(entries)
 
     r = Request('deckNames')
-    print(r.response)
+    print(r._response)
     print("done")
     
