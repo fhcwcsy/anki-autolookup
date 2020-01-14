@@ -218,6 +218,9 @@ class WordlistWindow(tk.Frame):
                 except Exception as e:
                     print('Can not add this word:', self._finishedWord[i])
                     print(str(e))
+            elif self._cbvar[i].get() == True and self._finished[i] == None:
+                    print('Lookup failed:', self._finishedWord[i])
+
         # for b, listOfEntries in zip(self._cbvar, self._finished):
             # print(b.get(), listOfEntries) # If b is true, then add the corresponding entries.
     

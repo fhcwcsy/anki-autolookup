@@ -40,7 +40,8 @@ class Request:
 
     """
     def __init__(self, action, **params):
-        """
+        """Constructor of the class.
+
         Args:
             action: The action users want to do with anki API.
             params: The other necessary information associated with the action.

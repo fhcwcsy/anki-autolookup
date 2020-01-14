@@ -44,9 +44,34 @@ then use `46741504` and `2055492159` to add the plugins.
 
 ## Usage
 
+Use:
+
 ```{bash}
 ./start.sh
 ```
+
+to start the program. Anki must be running in the background so the API can 
+work. Select the deck you want to add cards to, then choose a method to add
+words. Currently, three features are available:
+
+- Word lookup: Simply type the words you want to lookup. The program will
+record the word whenever you press `<Return>`. The words will be shown in the
+wordlist on the right. You can uncheck the checkbuttons
+beside a word you don't want to add to your deck. After the lookup finishes,
+(the queue is empty), each word (if it is checked and **the lookup succeed**), the
+program will generate a card to the deck.
+
+- Article lookup: Paste an article to the textbox, then click `Lookup!`. The 
+program will find the difficult words in the article and list them in the 
+wordlist. The wordlist works the same way as the previous feature. For the
+definition of _difficult words_, see the explanation of [`article_lookup.py`](https://github.com/fhcwcsy/anki-autolookup/blob/master/README.md#article_lookuppy).
+
+- Image lookup: Choose a image (**must not be tilted or twisted or it will not
+be accurate.** Some examples are provided in `./main/imgexample/`.) Click on the
+words you want to lookup. The wordlist works the same way as the first feature.
+
+Note that when you close the window of a feature, the main menu will show up
+**after the queue is cleared.**
 
 ## Demonstration
 
@@ -106,6 +131,8 @@ the request. Contains "result" and "error".
 
 ##### Class Methods
 - `__init__(self)`
+
+Constructor of the class.
 
 	Args:
         action: The action users want to do with anki API.
