@@ -127,7 +127,7 @@ class WordlistWindow(tk.Frame):
 
         # done button
         self._quitButton = tk.Button(self.interior, text='Done', command=self._quitAndAdd)
-        self._quitButton.grid(row=1, column=1)
+        self._quitButton.grid(row=1, column=1, sticky='w')
 
         # Wordlist setup
         self._cbvar = []
