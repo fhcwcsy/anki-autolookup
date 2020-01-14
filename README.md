@@ -613,7 +613,7 @@ word.
 
     This function is designed to recognize the word on the position(wordX, wordY).
 
-    Here, we will first find the nearst white raws to detect the line which the word belong to. Use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
+    Here, we will first find the nearst white raws to detect the line which the word belong to. Then, use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
 
     Then, we put the image of the line into pytesseract to transform image to English. Use the order of the word in the string to get `targetWordFromLine`. But sometimes the order may be detected wrong. So we chop the image of the word and use pytesseract to get `targetWordFromWord`, which may have lower precision than the word detected in whole line. 
     
