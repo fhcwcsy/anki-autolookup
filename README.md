@@ -60,14 +60,14 @@ then use `46741504` and `2055492159` to add the plugins.
 +-- README.md: This documentation.
 +-- start.sh: bash script to launch the program.
 +-- main: Main scripts of the program.
-|   +-- add_card.py
+|   +-- add_card.py: Functions to generate new cards and add to Anki.
 |   +-- article_lookup.py: Lookup difficult words in an article.
 |   +-- crawler.py: A cralwer to lookup words in Cambridge online dictionary.
 |   +-- dic.xlsx: A spreadsheet with data about word usage in a variety of sources.
 |   +-- imgrecog.py: The script for word lookup from images.
-|   +-- main.py
+|   +-- main.py: Main menu GUI.
 |   +-- wordlist_cls.py: The script defining the wordlist window.
-|   +-- word_lookup.py:
+|   +-- word_lookup.py: GUI for adding inserted words to Anki.
 +-- presentation: Slides used (Tex and pdf files) for presentation in class.
 |   +-- proposal.*: Slides for the proposal.
 +-- trash: scripts that are no longer in use.
@@ -90,7 +90,7 @@ The required modules are:
 - urllib.request
 - collections (namedtuple)
 
-Below we list the class and functions in this file.
+Below we list the classes and functions in this file.
 
 #### Request
 
@@ -119,7 +119,7 @@ the request. Contains "result" and "error".
 
 - `_invoke(self)`
 
-This method connect with anki API and check if there is any mistake. If not, 
+This method connects with anki API and check if there is any mistake. If not, 
 put the response in the attribute `_response`.
         
 	Args:
@@ -130,15 +130,15 @@ put the response in the attribute `_response`.
         
     Raises:
         Raise Exception ("response has an unexpected number of fields") if 
-        the anki-connect system returned an invalid response.
+			the anki-connect system returned an invalid response.
         Raise Exception ("response is missing required error field") if the 
-        anki-connect system didn't returned error field.
+			anki-connect system didn't returned error field.
         Raise Exception ("response is missing required result field") if the 
-        anki-connect system didn't returned result field.
+			anki-connect system didn't returned result field.
         Rasie Exception (self._response) if there exists errors in the 
-        returned response.
+			returned response.
  
-#### `add_note(wordinfo)`
+#### add\_note(wordinfo)
 
 This function calls `Request`, using `addnote` as action, `deckName` as 
 deckname, `my_model` as modelname, `fields` as field.
@@ -220,9 +220,24 @@ This is the main window of the feature.
 
 ##### Attributes
 
-- difficulty: The (normalized) maximum difficulty of the word to be looked up. 
+- `difficulty`: The (normalized) maximum difficulty of the word to be looked up. 
 The lower this value is, the less word (keeping only the most difficult ones)
 will be looked up.
+
+- `_inputWindow`: A `tk.Toplevel()` object. The window on the left that allows 
+the user to paste an article to be looked up.
+
+- `_wordwindow`: A `tk.Toplevel()` object. The window on the right that allows
+the user to select the words they want to add to Anki.
+
+- `_lookupButton`: A `tk.Button` object. The button that will analyze the article
+when pressed. 
+
+- `_inputBox`: A `tk.Text` object. The textbox that allows the user to paste
+text.
+
+- `_wordlistFrame`: A `WordlistWindow` object. Shows the list of words found in
+the article with checkboxes.
 
 ##### Class Methods
 
@@ -357,7 +372,7 @@ A namedtuple representing an entry in a dictionary of a looked-up word.
 ##### Usage:
 
 ```
-Entry(word, partOfSpeech, pronunciation, listOfDefinitions, listOfExamples)
+Entry(word, pos, pronunciation, listOfDefinitions, listOfExamples)
 ```
 
 ##### Attributes:
@@ -428,7 +443,11 @@ If the lookup failed, that is, no entry is found, then export will return
 
 ##### Attributes
 
-No public attributes.
+- `_word`: A string. The word to be looked up (The original word inserted
+while constructing the object).
+
+- `_entries`: A list of Entry objects. The entries found while looking up
+the word. Set to `None` before lookup.
  
 ##### Class Methods
 
@@ -531,14 +550,24 @@ recognized as a black pixel and set to 1.
  When the number of black pixels in a raw is less than this number,
 it will be recognized as a white line.
  
-- `__SPACE_THRESHOLD`
+- `_SPACE_THRESHOLD`
 
 When the black pixels in a column is less than this constant,
 it will be considered as a white column.
  
 ##### Attributes:
 
-No public attributes.
+- `_originalImg`: an Image object which is a colored (possibly scaled) image
+chosen by the user.
+
+- `_imgArray`: a 2D `np.array` object containing only `0` and `1`,
+representing a black-and-white version of the image.
+
+- `_height`: the height of the (possibly scaled) image.
+
+- `_width`: the width of the (possibly scaled) image.
+
+- `_horizontalSum`: A 1D `np.array` containing the number of 1 of each row.
 
 ##### Class Methods:
 - `_is_similar(s1,s2)`
@@ -595,9 +624,21 @@ When the event is occured, we will return the word on the position (event.x, eve
 
 #### ImgRecognitionWindow
 
-Defines the window showing the image. The user clicks
+This class defines the window showing the image. The user clicks
 on words they want to look up and the word will be listed in the wordlist 
-on the right. This class inherit the class `TextPicture`
+on the right. This class inherit the class `TextPicture`.
+
+##### Attributes
+
+- `_img_path`: The path to the image to be analyzed.
+
+- `_picWindow`: A `tk.Toplevel` object. The Window containing the picture.
+
+- `_wordWindow`: A `tk.Toplevel` object. The window containing the word
+found in the image.
+
+- `_wordlistFrame`: A `WordlistWindow` object. The frame in `_wordWindow`
+containing the words and the checkboxes.
 
 ##### Class Methods
 
@@ -683,7 +724,16 @@ connect with the user's anki, this menu will show nothing.
 
 ##### Attributes:
 
-No public attributes. 
+- `_master`: A `tk.Tk` object. The master of this program.
+
+- `_deck_name_prompt`: A `tk.Label` object. The text to ask the user either
+to launch Anki or to choose a deck.
+
+- `_targetDeck`: The deck name that all the cards will be added to.
+
+- `_decknames`: A tuple containing all the decks in the user's Anki account.
+
+- `_decksmenu`: A `tk.OptionMenu` object listing all the decknames.
 
 ##### Class Methods:
 
@@ -817,11 +867,42 @@ checked by default. The user can click on the "done" button to quit and
 
 ##### Attributes
 
-- vscrollbar: The vertical tk.Scrollbar object on the right.
+- `vscrollbar`: The vertical tk.Scrollbar object on the right.
 
-- canvas: The tk.Canvas in the background of the frame.
+- `canvas`: The `tk.Canvas` in the background of the frame.
 
-- interior: a tk.Frame object that everything lie on.
+- `interior`: `a tk.Frame` object that everything lie on.
+
+- `_status`: a `tk.Label` object showing the length of the queue.
+
+- `_quitButton`: a `tk.Button` object that will quit the window while
+pressed.
+
+- `_cbvar`: A list of `tk.BooleanVar` objects saving and monitoring the
+value of the checkbutton of each word.
+
+- `_cb`: A list of `tk.Checkbutton` objects, one for each word, and linked
+to the corresponding `tk.BooleanVar` objects in `self._cbvar`.
+
+- `_queue`: A list of strings saving the words that are added via
+`self.newWord(word)` and are not yet looked up.
+
+- `_finished`: A list of list of Entry objects saving the lookup result of
+each word. `None` if the lookup failed.
+
+- `_finishedWord`: A list of strings saving the words that have been
+looked up.
+
+- `_thread`: A boolean. If set to `False`, the lookup threading will
+pause.
+
+- `_interval`: The length of time to wait while the queue is empty.
+
+- `_threadInstance`: A `threading.Thread` object controlling the
+lookup in the background.
+
+- `_quitFunction`: A function. Will be called when `self._quitButton`
+is pressed to kill the window.
  
 ##### Class Methods
 
@@ -924,7 +1005,17 @@ keyed in.
 
 ##### Attributes:
 
-No public attribute.   
+- `_wordlistWindow`: A `tk.Toplevel` object. The window showing the
+wordlist.
+
+- `_inputWindow`: A `tk.Toplevel` object. The window with the textbox
+that allow the user to input words.
+
+- `_inputBox`: A `tk.Text` object. The textbox that allow the user to 
+input words.
+
+- `_wordlistFrame`: A `WordlistWindow` object. The frame with the words
+that the user have typed and checkbuttons for each word.
 
 ##### Class Methods:
 

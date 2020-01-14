@@ -42,7 +42,23 @@ def timer(func):
 
 class TextPicture():
 
-    """A picture containing text to be recognized."""
+    """A picture containing text to be recognized.
+    
+    Attributes:
+
+        _originalImg: an Image object which is a colored (possibly scaled) image
+            chosen by the user.
+
+        _imgArray: a 2D `np.array` object containing only `0` and `1`,
+            representing a black-and-white version of the image.
+
+        _height: the height of the (possibly scaled) image.
+
+        _width: the width of the (possibly scaled) image.
+
+        _horizontalSum`: A 1D `np.array` containing the number of 1 of each row.
+     
+    """
 
     # When the number of black pixels in a raw is less than this number,
     # it will be recognized as a white line.
@@ -62,19 +78,20 @@ class TextPicture():
         self._originalImg = img #The target picture to be recognized.
         self._imgArray = np.floor_divide(
                 np.array(self._originalImg.convert('L')), TextPicture._BNW_THRESHOLD)
+
+        # The processed image mentioned in _imgArray.
         self._processedImg = Image.fromarray(np.multiply(self._imgArray, 255))
-        """
-        The processed image mentioned in _imgArray.
-        """
+
         self._height, self._width = self._imgArray.shape #The size of the picture.
         
+        # The array of the image, which is processed a little bit to make it
+        # more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means
+        # white, while 1 means black)
         self._imgArray = np.subtract(1, self._imgArray)
-        """The array of the image, which is processed a little bit to make it
-        more easliy to analyze. (Turn the array to be 0 and 1 only. 0 means
-        white, while 1 means black)
-        """
+        
+        # The number of black points of each row of the picture."""
         self._horizontalSum = np.sum(self._imgArray, axis=1) 
-        """The number of black points of each horiaontal raw of the picture."""
+
         # plt.matshow(self._processedImg)
         # plt.plot(self._horizontalSum)
         # plt.show() 
@@ -260,10 +277,23 @@ class TextPicture():
             return []
 
 class ImgRecognitionWindow(TextPicture):
-    """
-    Defines the window showing the image. The user clicks
+    """The window containing the image to be recognized.
+
+    This class defines the window showing the image. The user clicks
     on words they want to look up and the word will be listed in the wordlist 
-    on the right. This class inherit the class `TextPicture`
+    on the right. This class inherit the class `TextPicture`.
+
+    Attributes:
+        _img_path: The path to the image to be analyzed.
+
+        _picWindow: A `tk.Toplevel` object. The Window containing the picture.
+
+        _wordWindow: A `tk.Toplevel` object. The window containing the word
+            found in the image.
+
+        _wordlistFrame: A `WordlistWindow` object. The frame in `_wordWindow`
+            containing the words and the checkboxes.
+     
     """
 
     def __init__(self):
@@ -330,10 +360,10 @@ class ImgRecognitionWindow(TextPicture):
             f'{ww_width}x{self._processedImg.size[1]}+{self._processedImg.size[0]}+0')
 
         self._wordWindow.title('Words to be added')
-        self.wlist = wordlist_cls.WordlistWindow(self._wordWindow,
+        self._wordlistFrame = wordlist_cls.WordlistWindow(self._wordWindow,
                 self.quitWindow, bg='#444444')
 
-        self.wlist.pack(expand="true", fill="both")
+        self._wordlistFrame.pack(expand="true", fill="both")
 
         # self._wordWindow.lift()
         # self._picWindow.lift()
@@ -374,7 +404,7 @@ class ImgRecognitionWindow(TextPicture):
             None
         """
         word = super()._bindEvent(event)
-        self.wlist.newWord(word)
+        self._wordlistFrame.newWord(word)
  
 
 if __name__ == "__main__":

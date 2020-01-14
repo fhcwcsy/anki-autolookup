@@ -1,6 +1,6 @@
 """
 This file defines a Request class and three functions (add_note, 
-create_model, new_deck_name), to connect to anki API and convert the 
+create_model, new_deck_name), to connect to anki API and converts the 
 information obtained by `crawler.py` to cards in anki.
 
 The required modules are:
@@ -59,7 +59,7 @@ class Request:
 
     def _invoke(self):
         """
-        This method connect with anki API and check if there is any mistake. If 
+        This method connects with anki API and check if there is any mistake. If 
         not, put the response in the attribute _response.
         Args:
             None
@@ -69,13 +69,13 @@ class Request:
         
         Raises:
             Raise Exception ("response has an unexpected number of fields") if 
-            the anki-connect system returned an invalid response.
+                the anki-connect system returned an invalid response.
             Raise Exception ("response is missing required error field") if the 
-            anki-connect system didn't returned error field.
+                anki-connect system didn't returned error field.
             Raise Exception ("response is missing required result field") if the 
-            anki-connect system didn't returned result field.
+                anki-connect system didn't returned result field.
             Rasie Exception (self._response) if there exists errors in the 
-            returned response.
+                returned response.
         """
         requestJson = json.dumps(self._request).encode('utf-8')
         self._response = json.load(urllib.request.urlopen(urllib.request.Request("http://localhost:8765", requestJson)))
@@ -186,7 +186,7 @@ def create_model():
         for j in range(10):
             inorderfields.append("examples"+str(i)+"_"+str(j)) 
             back += "{{examples" + str(i) + "_" + str(j) + "}}<br>"
-    if my_model not in check.result:
+    if my_model not in check._result:
         create_model = Request("createModel", modelName=my_model, 
                 inOrderFields=inorderfields, 
                 css=".card{font-family:Arial; background-color:white;}", 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
     if Request("version")._result != 6 :
         raise Exception("API version is not 6")
     
-        #print(new_request.result)
+        #print(new_request._result)
 
 
     # entries = [Entry(word='colour', pos='noun', pronunciation='/ˈkʌl.ər/', definitions=['顏色', '色彩，色調', '顏料，染料', '紅潤的面色；血色，氣色', '趣味；風格；風味；色彩', '（人種的）膚色'], examples=[["What's your favourite color?", 'She wears a lot of bright colors.'], ['I think we need a bit of color in this room.', 'Red and yellow peppers give a little color to the sauce.'], ['I put my new green shirt in a hot wash and the color ran (= the color came out of the material).'], ['That walk has put some color in your cheeks.', 'I watched the color drain from her face as she heard the news.'], ['We added your story for a bit of local color.', "Michael was there so that added a bit of color to the evening's proceedings."], ['She felt she had not been given the job because of her color.', 'There should be no discrimination on the grounds of color.']]), Entry(word='colour', pos='adjective', pronunciation='/ˈkʌl.ər/', definitions=['（電視、照片、印刷）彩色的'], examples=[[]]), Entry(word='bark', pos='verb', pronunciation='/ˈkʌl.ər/', definitions=['變色；給…著色；使成為…色', '（因為尷尬而）臉紅', '影響（觀點）；使有偏見'], examples=[['Do you think he colors his hair?', 'He drew a heart and colored it red.'], [], ["I'm sure my views on marriage are colored by my parents' divorce.", "I'm trying not to let my judgment be colored by that one incident."]])] 

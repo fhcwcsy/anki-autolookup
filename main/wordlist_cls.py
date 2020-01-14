@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
     anki-autolookup.wordlist_cls
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -42,8 +41,48 @@ class WordlistWindow(tk.Frame):
 
     Attributes:
         vscrollbar: The vertical tk.Scrollbar object on the right.
+
         canvas: The tk.Canvas in the background of the frame.
+        
         interior: a tk.Frame object that everything lie on.
+
+        vscrollbar: The vertical tk.Scrollbar object on the right.
+
+        canvas: The `tk.Canvas` in the background of the frame.
+
+        interior: `a tk.Frame` object that everything lie on.
+
+        _status: a `tk.Label` object showing the length of the queue.
+
+        _quitButton: a `tk.Button` object that will quit the window while
+            pressed.
+
+        _cbvar: A list of `tk.BooleanVar` objects saving and monitoring the
+            value of the checkbutton of each word.
+
+        _cb: A list of `tk.Checkbutton` objects, one for each word, and linked
+            to the corresponding `tk.BooleanVar` objects in `self._cbvar`.
+
+        _queue: A list of strings saving the words that are added via
+            `self.newWord(word)` and are not yet looked up.
+
+        _finished: A list of list of Entry objects saving the lookup result of
+        each word. `None` if the lookup failed.
+
+        _finishedWord: A list of strings saving the words that have been
+            looked up.
+
+        _thread: A boolean. If set to `False`, the lookup threading will
+            pause.
+
+        _interval: The length of time to wait while the queue is empty.
+
+        _threadInstance: A `threading.Thread` object controlling the
+            lookup in the background.
+
+        _quitFunction: A function. Will be called when `self._quitButton`
+            is pressed to kill the window.
+ 
     """
 
     def __init__(self, master, quitFunc, **kwargs):
@@ -87,8 +126,8 @@ class WordlistWindow(tk.Frame):
         self._status.grid(row=2, column=1)
 
         # done button
-        self.quitButton = tk.Button(self.interior, text='Done', command=self._quitAndAdd)
-        self.quitButton.grid(row=1, column=1)
+        self._quitButton = tk.Button(self.interior, text='Done', command=self._quitAndAdd)
+        self._quitButton.grid(row=1, column=1)
 
         # Wordlist setup
         self._cbvar = []

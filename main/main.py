@@ -38,11 +38,21 @@ class lookupGUI:
     connect with the user's anki, this menu will show nothing.
 
     Attributes:
-        No public attributes.
+        _master`: A `tk.Tk` object. The master of this program.
+
+        _deck_name_prompt: A `tk.Label` object. The text to ask the user either
+            to launch Anki or to choose a deck.
+
+        _targetDeck: The deck name that all the cards will be added to.
+
+        _decknames: A tuple containing all the decks in the user's Anki account.
+
+        _decksmenu: A `tk.OptionMenu` object listing all the decknames.
+         
 
     """
     def __init__(self):
-        self._definitions = ''
+        # self._definitions = ''
         self._master = tk.Tk()
         self._master.title('Anki Auto-Lookup!')
         self._master.geometry('800x600')

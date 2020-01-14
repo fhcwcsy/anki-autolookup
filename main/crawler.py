@@ -91,7 +91,12 @@ class LookupRequest(object):
     None.
 
     Attributes:
-        No public attributes.
+        _word: A string. The word to be looked up (The original word inserted
+            while constructing the object).
+
+        _entries: A list of Entry objects. The entries found while looking up
+            the word. Set to `None` before lookup.
+     
 
     """
     

@@ -40,6 +40,22 @@ class ArticleRecognitionWindow:
         difficulty: The (normalized) maximum difficulty of the word to be looked
             up. The lower this value is, the less word (keeping only the most
             difficult ones) will be looked up.
+
+        _inputWindow: A `tk.Toplevel()` object. The window on the left that allows 
+            the user to paste an article to be looked up.
+
+        _wordwindow: A `tk.Toplevel()` object. The window on the right that allows
+            the user to select the words they want to add to Anki.
+
+        _lookupButton: A `tk.Button` object. The button that will analyze the article
+            when pressed. 
+
+        _inputBox: A `tk.Text` object. The textbox that allows the user to paste
+            text.
+
+        _wordlistFrame: A `WordlistWindow` object. Shows the list of words found in
+            the article with checkboxes.
+         
     """
 
     def __init__(self):
@@ -80,15 +96,15 @@ class ArticleRecognitionWindow:
         self._lookupButton = tk.Button(self._inputWindow, text='Lookup!'
                 , command=self.lookup)
         self._lookupButton.pack()
-        self.outputbox = tk.Text(self._inputWindow, width=110,
+        self._inputBox = tk.Text(self._inputWindow, width=110,
                                  height=45)
-        self.outputbox.pack()
+        self._inputBox.pack()
         self._wordwindow.geometry('300x600+820+20')
 
         self._wordwindow.title('Words to be added')
-        self.wlist = wordlist_cls.WordlistWindow(self._wordwindow,
+        self._wordlistFrame = wordlist_cls.WordlistWindow(self._wordwindow,
                 self.quitWindow, bg='#444444')
-        self.wlist.pack(expand='true', fill='both')
+        self._wordlistFrame.pack(expand='true', fill='both')
 
         self._inputWindow.mainloop()
 
@@ -136,13 +152,13 @@ class ArticleRecognitionWindow:
             messagebox.showerror('Error', 'Invalid difficulty!')
             return
             # raise e
-        text = self.outputbox.get('1.0', 'end')
+        text = self._inputBox.get('1.0', 'end')
         worddic = self._getWordlist()
         wordset = self._getArticle(text)
         # print(wordset)
         wordlist = self._setLookup(wordset, worddic)
         for word in wordlist:
-            self.wlist.newWord(word)
+            self._wordlistFrame.newWord(word)
 
     def _getWordlist(self):
         """

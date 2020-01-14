@@ -20,7 +20,18 @@ class WordLookupWindow(object):
     keyed in.
 
     Attribute:
-        No public attribute.
+        _wordlistWindow: A `tk.Toplevel` object. The window showing the
+            wordlist.
+
+        _inputWindow: A `tk.Toplevel` object. The window with the textbox
+            that allow the user to input words.
+
+        _inputBox: A `tk.Text` object. The textbox that allow the user to 
+            input words.
+
+        _wordlistFrame: A `WordlistWindow` object. The frame with the words
+            that the user have typed and checkbuttons for each word.
+     
     """
     def __init__(self):
         self._wordlistWindow = tk.Toplevel()
@@ -34,15 +45,15 @@ class WordLookupWindow(object):
                 bg='white', font=('Arial', 12))
         word_lookup_label.pack(side=tk.TOP) 
 
-        self._outputbox = tk.Text(self._inputWindow, width=60, height=40)
-        self._outputbox.pack()
-        self._outputbox.bind('<Return>', self._fireOnEnter)
+        self._inputBox = tk.Text(self._inputWindow, width=60, height=40)
+        self._inputBox.pack()
+        self._inputBox.bind('<Return>', self._fireOnEnter)
 
         self._wordlistWindow.geometry('300x500+700+300') 
         self._wordlistWindow.title('Words to be added')
-        self._wordlistInner = wordlist_cls.WordlistWindow(
+        self._wordlistFrame = wordlist_cls.WordlistWindow(
                 self._wordlistWindow, self._quitWindow, bg='#444444')
-        self._wordlistInner.pack(expand="true", fill="both")  
+        self._wordlistFrame.pack(expand="true", fill="both")  
 
 
         tk.mainloop() 
@@ -84,10 +95,10 @@ class WordLookupWindow(object):
         Raise:
             None 
         """
-        word = self._outputbox.get(1.0, tk.END)
+        word = self._inputBox.get(1.0, tk.END)
         self.word = word[:-1]
         self.word = self.word.split('\n')
-        self._wordlistInner.newWord(self.word[-1])
+        self._wordlistFrame.newWord(self.word[-1])
         
 
 
