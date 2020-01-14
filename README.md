@@ -609,6 +609,24 @@ word.
 	Raise:
 		None
  
+- `recognizeWord(wordX,wordY):`
+
+    This function is designed to recognize the word on the position(wordX, wordY).
+
+    Here, we will first find the nearst white raws to detect the line which the word belong to. Use `_extractLine(lineUpperBound, lineLowerBound)` to divide the words.
+
+    Then, we put the image of the line into pytesseract to transform image to English. Use the order of the word in the string to get `targetWordFromLine`. But sometimes the order may be detected wrong. So we chop the image of the word and use pytesseract to get `targetWordFromWord`, which may have lower precision than the word detected in whole line. 
+    
+    Last, we use `_is_similar(s1, s2)` to compare `targetWordFromLine` and `targetWordFromWord`. If they are similar, then return `targetWordFromLine`, which has higher precision. When they are not similar, it implies that the order of the word in line may be detected wrong. Thus, `targetWordFromLine` may be wrong, so we return `targetWordFromWord` instead.
+    ```
+    Args:
+             WordX, WordY: The position of the word we want to recognize.
+    
+    Return:
+            The word we recognize. Type: str
+    
+    Raise:
+            None
 
 - `_bindEvent(event)`:
 
