@@ -575,7 +575,8 @@ representing a black-and-white version of the image.
 Determine whether two words s1 and s2 are similar or not.
 
 We would compare the length and the characters in them to determine whether they are similar or not.
-	Args:
+
+    Args:
 		s1, s2: two strings to be compared.
 			
 	Return:
@@ -646,11 +647,11 @@ containing the words and the checkboxes.
 
 This constructor will create two windows.
 
-_picwindow will show the picture the user has chosen (We will let the user 
+`_picwindow` will show the picture the user has chosen (We will let the user 
 choose the file they want to be analyzed). Then, the user can click the
 word and the word will be recognized.
 
-_wordWindow will show the selected words. The user can choose which 
+`_wordWindow` will show the selected words. The user can choose which 
 words they want to make the vocabulary cards.
 
 	Args:
@@ -678,8 +679,7 @@ Destroy/quit the windows.
 
 - `bindEvent(event)`
     
-When the event occured, We will detect the word users click and add it to the
-`_wordWindow`
+When the event occured, We will detect the word users click and add it to the `_wordWindow`.
 
     Args:
 		None
