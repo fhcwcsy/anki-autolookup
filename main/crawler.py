@@ -138,20 +138,23 @@ class LookupRequest(object):
         """
 
         try:
-            self._directOnlineLookup()
+            self._cambridgeLookup()
 
-            # American English spelling
-            if (len(self._entries[0].definitions[0]) > 6
-                    and self._entries[0].definitions[0][-6:] == '的美式拼寫）'):
+            check_american = self._entries[0].definitions[0].find('的美式拼寫')
+
+            if (check_american >= 0):
 
                 # The british spelling as the target, and te original spelling 
                 # will replace the british spelling.
-                self._directOnlineLookup(self._entries[0].definitions[0][1:-6],
-                        self._entries[0].word) 
+                british_word = self._entries[0].definitions[0][1:check_american]
+                self._cambridgeLookup(british_word, self._entries[0].word) 
         except Exception as e:
-            self._entries = None
+            try:
+                self._dictionary_com_Lookup()
+            except Exception as e:
+                self._entries = None
 
-    def _directOnlineLookup(self, target=None, replace=None):
+    def _cambridgeLookup(self, target=None, replace=None):
         """Look up the word and saves a list of Entry objects to self._entries.
 
         Look up the word in Cambridge online dictionary and return a list of
@@ -197,7 +200,9 @@ class LookupRequest(object):
                 for dt in definition_tags:
                     if ((dt.parent.attrs['class'])[0] == 'phrase-body'):
                         continue
-                    def_text = dt.find('span', 'trans dtrans dtrans-se').text
+                    ch_def = dt.find('span', 'trans dtrans dtrans-se').text
+                    eng_def = dt.find('div', 'def ddef_d db').text
+                    def_text = ch_def + ' <br> ' + eng_def
                     definition_list.append(def_text)
                     example_single = [t.text for t in dt.findAll(
                         'span', 'eg deg')][:KEEP_EXAMPLES]
@@ -213,6 +218,60 @@ class LookupRequest(object):
         except Exception as e:
             # return False
             raise e
+
+    def _dictionary_com_Lookup(self):
+        prefix = 'https://www.dictionary.com/browse/' 
+        url = prefix + self._word
+        entry_list = list()
+        try:
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, "html.parser") 
+            # print(soup)
+            webEntries = soup.findAll('div', 'css-1urpfgu e16867sm0')
+            for entryBlock in webEntries:
+                word_tag = entryBlock.find('h1', 'css-1jzk4d9 e1rg2mtf8')
+                if word_tag == None:
+                    continue
+                word = word_tag.text
+
+                # easy pronuncation
+                # pronun = entryBlock.find('span',
+                        # 'pron-spell-content css-z3mf2 evh0tcl2').text
+                # IPA
+                pronun = entryBlock.find('span',
+                        'pron-ipa-content css-z3mf2 evh0tcl2').text
+
+                pronun = re.sub('\\u2009', ' ', pronun)
+
+                subEntries = entryBlock.findAll('section', 'css-pnw38j e1hk9ate0')
+                for se in subEntries:
+                    pos = se.find('span', 'luna-pos').text 
+                    def_tags = se.findAll('div', 'e1q3nk1v3') 
+                    defs = list()
+                    exps = list()
+
+                    for line in def_tags:
+                        _def = line.text
+                        _exp_tag = line.find('span', 'luna-example italic')
+                        if _exp_tag != None:
+                            _exp = _exp_tag.text
+                            _def = _def[:_def.find(_exp)]
+                        else:
+                            _exp = ''
+                        defs.append(_def)
+                        exps.append([_exp])
+                    entry_list.append(Entry(word, pos, pronun, defs, exps))
+                break
+            if len(entry_list):
+                self._entries = entry_list
+                return True
+            else:
+                raise Exception('EntryNotFound')
+                return False
+
+        except Exception as e:
+            raise e
+        
      
     def export(self):
         """Export the list of entries found.
@@ -230,6 +289,7 @@ class LookupRequest(object):
         return self._entries
 
 if __name__ == "__main__":
-    l = LookupRequest('python')
+    l = LookupRequest('undulate')
     l.onlineLookup()
+    # l.onlineLookup()
     print(l.export()) 

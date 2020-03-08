@@ -1,0 +1,178 @@
+1550893824964 Bering land bridge
+1550902018924 the slash-and-burn method
+1550902181636 intensive agriculture
+1550902518237 The declaration of Independence
+1550902981156 the New Deal
+1550903149452 Civil Rights Movement
+1550903416245 inaugural address
+1550914894291 physical anthropology
+1551243008629 demographic transition
+1551625150635 urban congestion
+1551625167492 urban fringe
+1551832816691 ecotour
+1551887740284 lunar module
+1551887844227 binary star
+1551887912306 variable star
+1551890898206 quarters of the Moon
+1551890946451 autumnal equinox
+1551891079225 Alpha Centaurus
+1551891532824 cosmic ray
+1551891567003 cretaceous period
+1551975972430 gravitational collapse
+1551977159179 inferior planet
+1551977292918 paleozoic era
+1551977380762 Precambrian era
+1551977416260 pyroclastic flow
+1551977610161 shatter cone
+1551977678200 shield volcano
+1551977720274 superior planet
+1551977974456 galactic halo
+1551977986248 globular cluster
+1551978112842 planetary nebula
+1551978196399 radial velocity
+1551978233055 right ascension
+1552232886259 phylogenetic tree
+1552232999940 predator control
+1552233019792 species diversity
+1552233276736 vascular plant
+1552576044946 genetic manipulation
+1552576307125 capillary vessel
+1552576355334 reduction division
+1552576419408 algae bloom
+1552576758876 annual ring
+1552576765436 coniferous tree
+1552576790143 boadleaf tree
+1552576815271 deciduous tree
+1552576830508 deciduous teeth
+1552576845687 evergreen tree
+1552576882378 fern seed
+1552578196883 grizzly bear
+1552578879555 climax community
+1552579622357 iron ore
+1552639818261 the assembly line
+1552878593418 white-water rafting
+1552985079821 palaeontologist
+1557376324812 pump out
+1557645330248 CG
+1557645842635 TCP/IP
+1557645964195 cognitive science
+1557646141637 summer solstice
+1557646165715 winter solstice
+1557646984804 mercantile marine
+1557647253163 red tide
+1557647580130 wale knot
+1557647636649 watery grave&nbsp;
+1558190506579 emission control
+1558190529632 environmental disruption
+1558190561429 environmentalist contingent
+1558191020701 ozone depletion
+1558191640958 hydroelectric power
+1558191666837 impermeable layer
+1558191756057 reclaimed wastewater
+1558191812791 saline water
+1558191844984 sedimentary rocks
+1558191949193 thermal pollutoin
+1558191986303 tributary streams
+1558192021218 unsaturated zone
+1558192681048 foreign exchange market
+1558192738909 stock price index
+1558192802663 capital gain
+1558193057316 high-interest rate
+1558193087506 high yield
+1558193099591 official discount rate
+1558193144236 discount rate
+1558193232294 consumer goods
+1558193272663 consumption tax
+1558193281218 securities industry
+1558193378265 break-even point
+1558694370833 investment trust
+1558694403742 business transaction
+1558694507099 boar of directors
+1558694545777 rate hike
+1558694563126 disguised unemployment
+1558694769333 seniority system
+1558695010523 depreciation reserves
+1558695275928 retirement benefits
+1558695310221 antitrust law
+1558695396385 foreign exchange reserves
+1558695769976 financial reform
+1558696699185 statement of purpose
+1558696739869 eligibility for entrance
+1558696768900 entrance ceremony
+1558696777746 university entrance examination
+1559145934293 admission procedure
+1559145981917 admission requirement
+1559146194237 paper qualification
+1559146234236 vocational school
+1559146250550 vocational education
+1559146521557 aging society
+1559146568252 College of Liberal Arts
+1559146655767 Dean of the faculty
+1559146698794 final oral defense
+1559146719039 education-conscious society
+1559146749728 educational administration
+1559146874667 mentally handicapped
+1559146906654 physically and mentally handicapped
+1559146921220 mentally retarted
+1559146937528 emotional disorder
+1559146975134 visual disturbance
+1559147023844 acoustic disturbance
+1559147065660 physical education&nbsp;
+1559147109725 school excursion
+1559147137110 school for deaf and dumb
+1559147207051 tutorial mode
+1559668614945 absorption coefficient
+1559668722288 antireflection
+1559668806819 conduction band
+1559668952503 intrinsic semiconductor
+1559669122481 solar constant
+1559669143287 solar cell
+1559669153169 transmission line
+1559669233256 descriptive approach
+1559669253122 explanatory approach
+1559669391223 inductive reasoning
+1559669401457 logical fallacy&nbsp;
+1559669438725 circular argument
+1560360809111 boggy land
+1560361110231 soil exhaustion
+1560361129034 soil erosion
+1560361657931 mountain range
+1560361682569 seism-
+1560361751330 dormant volcano
+1561510391384 trade barrier
+1561510479072 trade friction
+1561510914996 national interest
+1561510934215 national affairs
+1561511029729 military buildup
+1561511043804 economic sanction
+1561511402285 ICJ
+1561511432155 OECD
+1561997480262 speech ballon
+1561997724716 the penny press
+1561998463453 previous conviction
+1561998494393 ex-con
+1561998572588 defense attorney
+1562086625540 civil lawsuit
+1562087063971 burden of proof
+1562087073248 circumstantial evidence
+1562087492060 arrest warrant
+1562087551920 insurance claim
+1562087730822 mandatory arbitration
+1562087828819 production of document
+1562087841495 jury verdict
+1562087997604 file a suit
+1562088321593 cued speech
+1562088396935 subliminal perception
+1568131975801 carpe diem
+1568132532765 theater of the absurd
+1583078931004 atopic dermatitis
+1583078964615 dietary therapy
+1583427138938 vermiform appendix
+1583427696265 thyroid calcification
+1583427715961 thyroid carcinoma
+1583427730630 airborne irritant
+1583427762419 blood clotting
+1583427774446 Caesarean birth
+1583428574090 cirrus cloud
+1583428597357 warm front
+1583428618818 stationary front

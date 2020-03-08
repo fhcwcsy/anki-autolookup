@@ -95,7 +95,7 @@ class Request:
         self._result = self._response["result"]
 
 
-def add_note(wordinfo):
+def add_note(wordinfo, export=False):
     """
     This function calls `Request`, using "addnote" as action, "deckName" as 
     deckname, "my_model" as modelname, "fields" as field.
@@ -130,9 +130,9 @@ def add_note(wordinfo):
         pos[i] = entry.pos
         pronunciation[i] = entry.pronunciation
         for defi in entry.definitions:
-            definitions[i] += defi + ', '
+            definitions[i] += defi + '<br>'
         try:
-            if definitions[i][-2:] == ', ':
+            if definitions[i][-2:] == '<br>':
                 definitions[i] = definitions[i][:-2]
         except:
             pass
@@ -157,7 +157,11 @@ def add_note(wordinfo):
             except:
                 fields[field] = ' '
                 
-    add_card = Request("addNote", note={"deckName": deckName, "modelName": my_model, "fields":fields, "tags":""}) 
+    if export == False:
+        add_card = Request("addNote", note={"deckName": deckName, "modelName": my_model, "fields":fields, "tags":""}) 
+    else:
+        return fields
+
 
 
 def create_model():
@@ -183,7 +187,7 @@ def create_model():
         inorderfields.append("pos"+str(i))
         inorderfields.append("pronunciation"+str(i))
         inorderfields.append("definitions"+str(i))
-        back += "<center><strong><font size='5', color=darkred>" + "{{pos" + str(i) + "}}</strong></font><br>{{pronunciation" + str(i) + "}}<br><font size='3', color=kblue><strong>{{definitions" + str(i) + "}}</strong></font></center>"
+        back += "<center><strong><font size='5', color=Orange>" + "{{pos" + str(i) + "}}</strong></font><br>{{pronunciation" + str(i) + "}}<br><font size='3', color=DeepSkyBlue ><strong>{{definitions" + str(i) + "}}</strong></font></center>"
         for j in range(10):
             inorderfields.append("examples"+str(i)+"_"+str(j)) 
             back += "{{examples" + str(i) + "_" + str(j) + "}}<br>"
